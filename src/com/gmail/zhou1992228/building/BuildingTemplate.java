@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import net.minecraft.server.v1_7_R4.Position;
 
 public class BuildingTemplate {
 	public static HashMap<String, BuildingTemplate> building_templates =
@@ -57,7 +56,6 @@ public class BuildingTemplate {
 	public String getName() {
 		return name;
 	}
-	@SuppressWarnings("deprecation")
 	public Location Match(Location loc) {
 		int orix = (int) (loc.getX() - template_width / 2);
 		int oriy = (int) (loc.getY() - template_height / 2);
@@ -68,18 +66,18 @@ public class BuildingTemplate {
 			int match_x = orix + dx;
 			int match_y = oriy + dy;
 			int match_z = oriz + dz;
-			for (int x = 0; x < template_width; ++x)
-			for (int y = 0; y < template_height; ++y)
-			for (int z = 0; z < template_width; ++z) {
-				if (loc.getWorld().getBlockAt(match_x + x, match_y + y, match_z + z).getTypeId() ==
-					template_ids[0][x][y][z]) {
-					
-				}
+			if (MatchType1(match_x, match_y, match_z, loc.getWorld())) {
+				
 			}
 		}
 		return null;
 		// TODO
 	}
+	
+	private boolean MatchType1(int ox, int oy, int oz, World world) {
+		return true;
+	}
+	
 	private String name;
 	private int x_size;
 	private int y_size;
