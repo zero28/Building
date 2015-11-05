@@ -1,5 +1,7 @@
 package com.gmail.zhou1992228.building;
 
-public class Building {
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Building extends JavaPlugin {
 
 }
