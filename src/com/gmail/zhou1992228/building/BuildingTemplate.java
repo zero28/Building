@@ -4,14 +4,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class BuildingTemplate {
 	public static HashMap<String, BuildingTemplate> building_templates =
 			new HashMap<String, BuildingTemplate>();
-	public BuildingTemplate(FileConfiguration config) {
+	public static void AddBuildingTemplate(String name, ConfigurationSection config) {
+		building_templates.put(name, new BuildingTemplate(config));
+	}
+	public BuildingTemplate(ConfigurationSection config) {
 		x_size = config.getInt("x_size");
 		y_size = config.getInt("y_size");
 		z_size = config.getInt("z_size");
@@ -25,28 +29,34 @@ public class BuildingTemplate {
 		for (int i = 0; i < typelist.size(); ++i) {
 			String[] s = typelist.get(i).split(":");
 			ids.put(s[0], s[1]);
+			Bukkit.getLogger().info("##" + s[0] + "::" + s[1] + "!!");
 		}
 		name = config.getString("name");
-		building_templates.put(name, this);
 		template_ids = new int[8][template_width][template_height][template_width];
 		for (int l = 0; l < template.size(); ++l) {
 			int height = l / template_width;
 			int width = l % template_width;
 			for (int i = 0; i < template_width; ++i) {
-				template_ids[0][i][height][width] = Integer.parseInt(
-						ids.get(typelist.get(l).charAt(i) + ""));
+				if (ids.get(template.get(l).charAt(i) + "") == null) {
+					template_ids[0][i][height][width] = 0;
+				} else {
+					template_ids[0][i][height][width] = Integer.parseInt(
+						ids.get(template.get(l).charAt(i) + ""));
+				}
 			}
 		}
 		for (int y = 0; y < template_height; ++y) {
 			for (int x = 0; x < template_width; ++x)
 			for (int z = 0; z < template_width; ++z) {
-				template_ids[1][x][y][z] = template_ids[0][template_width - z - 1][y][x];
-				template_ids[2][x][y][z] = template_ids[1][template_width - z - 1][y][x];
-				template_ids[3][x][y][z] = template_ids[2][template_width - z - 1][y][x];
 				template_ids[4][x][y][z] = template_ids[0][template_width - x - 1][y][z];
-				template_ids[5][x][y][z] = template_ids[5][template_width - z - 1][y][x];
-				template_ids[6][x][y][z] = template_ids[6][template_width - z - 1][y][x];
-				template_ids[7][x][y][z] = template_ids[7][template_width - z - 1][y][x];
+			}
+		}
+		for (int i = 1; i < 4; ++i) 
+		for (int y = 0; y < template_height; ++y) {
+			for (int x = 0; x < template_width; ++x)
+			for (int z = 0; z < template_width; ++z) {
+				template_ids[i][x][y][z] = template_ids[i - 1][template_width - z - 1][y][x];
+				template_ids[i + 4][x][y][z] = template_ids[i + 3][template_width - z - 1][y][x];
 			}
 		}
 	}
@@ -72,6 +82,16 @@ public class BuildingTemplate {
 		int orix = (int) (loc.getX() - template_width / 2);
 		int oriy = (int) (loc.getY() - template_height / 2);
 		int oriz = (int) (loc.getZ() - template_width / 2);
+		
+		for (int type = 0; type < 8; ++type) {
+			if (MatchType(type, orix, oriy, oriz, loc.getWorld())) {
+				return new Location(loc.getWorld(),
+									orix + template_width / 2,
+									oriy + template_height / 2,
+									oriz + template_width / 2);
+			}
+		}
+		
 		for (int dx = -3; dx < 3; ++dx)
 		for (int dy = -3; dy < 3; ++dy)
 		for (int dz = -3; dz < 3; ++dz) {

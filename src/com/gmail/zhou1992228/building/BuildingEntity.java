@@ -20,6 +20,9 @@ public class BuildingEntity {
 	public void onUpdate() {
 		// TODO
 	}
+	public void Save() {
+		
+	}
 	private Location pos_;
 	private String building_type_;
 	private int value_count_;
