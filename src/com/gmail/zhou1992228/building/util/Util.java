@@ -10,14 +10,19 @@ import com.gmail.zhou1992228.building.Building;
 
 public class Util {
     public static FileConfiguration getConfigWithName(String name) {
+    	Building.LOG("123");
 		File file = new File(Building.ins.getDataFolder(), name);
+		Building.LOG("123");
 		if (file == null || !file.exists()) {
             try {
+            	Building.LOG("123");
                 file.createNewFile();
             } catch (IOException e) {
+            	Building.LOG("123");
                 e.printStackTrace();
             }
         }
+		Building.LOG("123");
 		return YamlConfiguration.loadConfiguration(file);
 	}
     

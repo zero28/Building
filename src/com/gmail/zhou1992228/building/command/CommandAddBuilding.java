@@ -15,5 +15,4 @@ public class CommandAddBuilding implements CommandExecutor {
 		BuildingManager.ins.TryAddBuilding((Player) arg0, arg3[0]);
 		return true;
 	}
-
 }

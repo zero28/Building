@@ -17,4 +17,10 @@ public class Building extends JavaPlugin {
 		this.getCommand("ttbd").setExecutor(new CommandAddBuilding());
 		BuildingManager.ins.Init(this);
 	}
+	
+	@Override
+	public void onDisable() {
+		LOG("Saving");
+		BuildingManager.ins.Save();
+	}
 }

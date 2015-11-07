@@ -13,7 +13,6 @@ import com.gmail.zhou1992228.building.util.Util;
 public class BuildingManager {
 	public static BuildingManager ins = new BuildingManager();
 	public BuildingManager() {
-		// TODO
 	}
 	public void Init(Building plugin) {
 		buildings_ = new ArrayList<BuildingEntity>();
@@ -24,8 +23,28 @@ public class BuildingManager {
 				config.getConfigurationSection(building_name));
 			Building.LOG("载入建筑:" + building_name);
 		}
+		Load();
 	}
+	public void Load() {
+		FileConfiguration config = Util.getConfigWithName("buildings.yml");
+		for (String key : config.getKeys(false)) {
+			buildings_.add(new BuildingEntity(config.getConfigurationSection(key)));
+		}
+	}
+	public void Save() {
+		Building.LOG("123");
+		FileConfiguration config = Util.getConfigWithName("buildings.yml");
+		for (int i = 0; i < buildings_.size(); ++i) {
+			buildings_.get(i).Save(config.createSection(i + ""));
+		}
+		Util.SaveConfigToName(config, "buildings.yml");
+	}
+	
 	public void TryAddBuilding(Player p, String building_name) {
+		TryAddBuilding(p, building_name, "");
+	}
+	
+	public void TryAddBuilding(Player p, String building_name, String custom_name) {
 		BuildingTemplate template = BuildingTemplate.building_templates.get(building_name);
 		if (template != null) {
 			Location loc = template.Match(p.getLocation());
@@ -35,7 +54,7 @@ public class BuildingManager {
 					p.sendMessage("建筑与已存在的建筑冲突！");
 				} else {
 					p.sendMessage(building_name + " 建设成功！");
-					buildings_.add(new BuildingEntity(p.getName(), loc, building_name));
+					buildings_.add(new BuildingEntity(p.getName(), loc, building_name, custom_name));
 				}
 			} else {
 				Building.LOG("NOT MATCH!");
@@ -50,9 +69,6 @@ public class BuildingManager {
 		return null;
 	}
 	public void DamageBuilding(Entity e) {
-		// TODO
-	}
-	public void Save() {
 		// TODO
 	}
 	

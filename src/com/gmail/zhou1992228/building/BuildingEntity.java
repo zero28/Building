@@ -1,13 +1,49 @@
 package com.gmail.zhou1992228.building;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class BuildingEntity {
 	public BuildingEntity(String owner, Location pos, String type) {
 		pos_ = pos;
 		owner_ = owner;
 		building_type_ = type;
+		name_ = owner + " µÄ " + type;
 	}
+	public BuildingEntity(String owner, Location pos, String type, String name) {
+		pos_ = pos;
+		owner_ = owner;
+		building_type_ = type;
+		if (name.isEmpty()) {
+			name_ = owner + " µÄ " + type;
+		} else {
+			name_ = name;
+		}
+	}
+	public BuildingEntity(ConfigurationSection config) {
+		building_type_ = config.getString("type");
+		owner_ = config.getString("owner");
+		pos_ = new Location(Bukkit.getWorld(config.getString("world")),
+							config.getInt("x"),
+							config.getInt("y"),
+							config.getInt("z"));
+		input_count_ = config.getInt("input_count");
+		output_count_ = config.getInt("output_count");
+		time_counter_ = config.getInt("time_counter");
+	}
+	public void Save(ConfigurationSection config) {
+		config.set("type", building_type_);
+		config.set("owner", owner_);
+		config.set("world", pos_.getWorld().getName());
+		config.set("x", pos_.getBlockX());
+		config.set("y", pos_.getBlockY());
+		config.set("z", pos_.getBlockZ());
+		config.set("input_count", input_count_);
+		config.set("output_count", output_count_);
+		config.set("time_counter", time_counter_);
+	}
+	
 	public Location getPos() {
 		return pos_;
 	}
@@ -19,8 +55,6 @@ public class BuildingEntity {
 	}
 	public void onUpdate() {
 		// TODO
-	}
-	public void Save() {	
 	}
 	
 	public boolean Collide(Location loc1, Location loc2) {
@@ -61,6 +95,9 @@ public class BuildingEntity {
 	
 	private Location pos_;
 	private String building_type_;
-	private int value_count_;
+	private int time_counter_;
 	private String owner_;
+	private int input_count_;
+	private int output_count_;
+	private String name_;
 }
