@@ -7,5 +7,6 @@
 			<attribute name="javadoc_location" value="http://jd.bukkit.org/rb/apidocs/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="E:/mcproject/1.7.10/Vault.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -5,3 +5,6 @@ commands:
   ttbd:
     description: test if a building ok
     usage: /<command>
+   ’ºØ:
+    description: Collection the resources from the building.
+    usage: /<command>

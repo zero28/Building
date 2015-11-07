@@ -31,8 +31,22 @@ public class BuildingManager {
 			buildings_.add(new BuildingEntity(config.getConfigurationSection(key)));
 		}
 	}
+	
+	public BuildingEntity getNearBuilding(Entity e) {
+		for (BuildingEntity building : buildings_) {
+			if (building.inBuilding(e.getLocation())) {
+				return building;
+			}
+		}
+		return null;
+	}
+	
+	public void onUpdate() {
+		for (BuildingEntity building : buildings_) {
+			building.onUpdate();
+		}
+	}
 	public void Save() {
-		Building.LOG("123");
 		FileConfiguration config = Util.getConfigWithName("buildings.yml");
 		for (int i = 0; i < buildings_.size(); ++i) {
 			buildings_.get(i).Save(config.createSection(i + ""));

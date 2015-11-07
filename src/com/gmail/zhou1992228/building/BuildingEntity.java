@@ -3,6 +3,10 @@ package com.gmail.zhou1992228.building;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
+import com.gmail.zhou1992228.building.util.Util;
 
 public class BuildingEntity {
 	public BuildingEntity(String owner, Location pos, String type) {
@@ -10,6 +14,7 @@ public class BuildingEntity {
 		owner_ = owner;
 		building_type_ = type;
 		name_ = owner + " 的 " + type;
+		template_ = BuildingTemplate.building_templates.get(building_type_);
 	}
 	public BuildingEntity(String owner, Location pos, String type, String name) {
 		pos_ = pos;
@@ -20,6 +25,7 @@ public class BuildingEntity {
 		} else {
 			name_ = name;
 		}
+		template_ = BuildingTemplate.building_templates.get(building_type_);
 	}
 	public BuildingEntity(ConfigurationSection config) {
 		building_type_ = config.getString("type");
@@ -31,6 +37,7 @@ public class BuildingEntity {
 		input_count_ = config.getInt("input_count");
 		output_count_ = config.getInt("output_count");
 		time_counter_ = config.getInt("time_counter");
+		template_ = BuildingTemplate.building_templates.get(building_type_);
 	}
 	public void Save(ConfigurationSection config) {
 		config.set("type", building_type_);
@@ -54,6 +61,52 @@ public class BuildingEntity {
 		return owner_;
 	}
 	public void onUpdate() {
+		time_counter_++;
+		if (time_counter_ >= template_.getInterval()) {
+			if (template_.getInput().isEmpty() || input_count_ > 0) {
+				if (template_.getStorage_cap() < output_count_) {
+					--input_count_; ++output_count_;
+				}
+			}
+			time_counter_ -= template_.getInterval();
+		}
+	}
+	
+	public void getOutput(Player p, int count) {
+		if (!p.getName().equals(owner_)) {
+			p.sendMessage("你不是此建筑的主人！");
+			return;
+		}
+		if (output_count_ == 0) {
+			p.sendMessage("还没东西呢，不要这么急~");
+			return;
+		}
+		while (output_count_ > 0 && count > 0) {
+			--output_count_;
+			--count;
+			Util.giveItems(p, template_.getOutput());
+		}
+	}
+	
+	public void addInput(Player p, int count) {
+		if (template_.getInput().isEmpty()) {
+			p.sendMessage("然而这并没有什么~用！");
+			return;
+		}
+		while (count > 0) {
+			--count;
+			if (!Util.haveRequires(p, template_.getInput())) {
+				p.sendMessage("你没有足够的物品！");
+				break;
+			} else {
+				Util.takeItems(p, template_.getInput());
+				++input_count_;
+			}
+		}
+		p.sendMessage("已放入材料");
+	}
+
+	public void onDamage(Entity entity) {
 		// TODO
 	}
 	
@@ -61,9 +114,9 @@ public class BuildingEntity {
 		int Xa = Math.abs(loc1.getBlockX() - loc2.getBlockX());
 		int Ya = Math.abs(loc1.getBlockY() - loc2.getBlockY());
 		int Za = Math.abs(loc1.getBlockZ() - loc2.getBlockZ());
-		int Xb = BuildingTemplate.building_templates.get(building_type_).getX_size();
-		int Yb = BuildingTemplate.building_templates.get(building_type_).getY_size();
-		int Zb = BuildingTemplate.building_templates.get(building_type_).getZ_size();
+		int Xb = template_.getX_size();
+		int Yb = template_.getY_size();
+		int Zb = template_.getZ_size();
 		int Xma = (loc1.getBlockX() + loc2.getBlockX()) / 2;
 		int Yma = (loc1.getBlockY() + loc2.getBlockY()) / 2;
 		int Zma = (loc1.getBlockZ() + loc2.getBlockZ()) / 2;
@@ -77,17 +130,17 @@ public class BuildingEntity {
 	
 	public boolean inBuilding(Location loc) {
 		int max_x = pos_.getBlockX()
-				  + BuildingTemplate.building_templates.get(building_type_).getX_size() / 2;
+				  + template_.getX_size() / 2;
 		int min_x = pos_.getBlockX()
-				  - BuildingTemplate.building_templates.get(building_type_).getX_size() / 2;
+				  - template_.getX_size() / 2;
 		int max_y = pos_.getBlockY()
-				  + BuildingTemplate.building_templates.get(building_type_).getY_size() / 2;
+				  + template_.getY_size() / 2;
 		int min_y = pos_.getBlockY()
-				  - BuildingTemplate.building_templates.get(building_type_).getY_size() / 2;
+				  - template_.getY_size() / 2;
 		int max_z = pos_.getBlockZ()
-				  + BuildingTemplate.building_templates.get(building_type_).getZ_size() / 2;
+				  + template_.getZ_size() / 2;
 		int min_z = pos_.getBlockZ()
-				  - BuildingTemplate.building_templates.get(building_type_).getZ_size() / 2;
+				  - template_.getZ_size() / 2;
 		return (min_x <= loc.getBlockX() && loc.getBlockX() <= max_x) &&
 			   (min_y <= loc.getBlockY() && loc.getBlockY() <= max_y) &&
 			   (min_z <= loc.getBlockZ() && loc.getBlockZ() <= max_z);
@@ -100,4 +153,5 @@ public class BuildingEntity {
 	private int input_count_;
 	private int output_count_;
 	private String name_;
+	private BuildingTemplate template_;
 }

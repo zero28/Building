@@ -2,27 +2,28 @@ package com.gmail.zhou1992228.building.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.gmail.zhou1992228.building.Building;
 
 public class Util {
     public static FileConfiguration getConfigWithName(String name) {
-    	Building.LOG("123");
 		File file = new File(Building.ins.getDataFolder(), name);
-		Building.LOG("123");
 		if (file == null || !file.exists()) {
             try {
-            	Building.LOG("123");
                 file.createNewFile();
             } catch (IOException e) {
-            	Building.LOG("123");
                 e.printStackTrace();
             }
         }
-		Building.LOG("123");
 		return YamlConfiguration.loadConfiguration(file);
 	}
     
@@ -42,4 +43,201 @@ public class Util {
 			e.printStackTrace();
 		}
     }
+   
+	public static void giveItems(Player p, String items) {
+		for (String item : items.split(" ")) {
+			giveItem(p, item);
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public static void giveItem(Player p, String item) {
+		String par[] = item.split(":");
+		if (par[0].startsWith("$")) {
+			int count = Integer.parseInt(item.substring(1));
+			Building.econ.depositPlayer(p.getName(), count);
+		} else if (par[0].equalsIgnoreCase("p")) {
+			if (par.length < 2) {
+				p.sendMessage("配置文件错误，请联系管理员");
+			}
+		} else if (par[0].equalsIgnoreCase("m")) {
+			ItemStack it = createFromString(item);
+			p.getInventory().addItem(it);
+		} else {
+			int id = 0, count = 0, meta = 0;
+			if (par.length == 1) {
+				id = Integer.parseInt(par[0]);
+				count = 1;
+			} else if (par.length == 2) {
+				id = Integer.parseInt(par[0]);
+				count = Integer.parseInt(par[1]);
+			} else if (par.length == 3) {
+				id = Integer.parseInt(par[0]);
+				meta = Integer.parseInt(par[1]);
+				count = Integer.parseInt(par[2]);
+			}
+			p.getInventory().addItem(new ItemStack(id, count, (short) meta));
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public static ItemStack createFromString(String s) {
+		try {
+			String[] part1 = s.split(":l:");
+			String[] part = part1[0].split(":");
+			String[] lore = part1[1].split(":");
+			if (!part[0].equals("m"))
+				return null;
+			ItemStack it = null;
+			if (part.length == 2) {
+				it = new ItemStack(Integer.parseInt(part[1]));
+			} else if (part.length == 3) {
+				it = new ItemStack(Integer.parseInt(part[1]),
+						Integer.parseInt(part[2]));
+			} else if (part.length == 4) {
+				it = new ItemStack(Integer.parseInt(part[1]),
+						Integer.parseInt(part[3]),
+						(short) Integer.parseInt(part[2]));
+			} else {
+				return null;
+			}
+			ItemMeta im = it.getItemMeta();
+			ArrayList<String> l = new ArrayList<String>();
+			for (String ss : lore) {
+				l.add(ss);
+			}
+			im.setLore(l);
+			it.setItemMeta(im);
+			return it;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static boolean haveRequires(Player p, String requires) {
+		for (String req : requires.split(" ")) {
+			if (!haveRequire(p, req)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@SuppressWarnings("deprecation")
+	public static boolean haveRequire(Player p, String req) {
+		String par[] = req.split(":");
+		if (par[0].startsWith("$")) {
+			int count = Integer.parseInt(req.substring(1));
+			if (Building.econ.bankHas(p.getName(), count).type != ResponseType.SUCCESS) {
+				return false;
+			}
+			return true;
+		} else if (par[0].equalsIgnoreCase("p")) {
+			if (par.length < 2) {
+				p.sendMessage("配置文件错误，请联系管理员");
+				return false;
+			}
+			return p.hasPermission(par[1]);
+		} else if (par[0].equalsIgnoreCase("m")) {
+			ItemStack it = createFromString(req);
+			if (!p.getInventory().containsAtLeast(it, it.getAmount())) {
+				return false;
+			}
+			return true;
+		} else if (par[0].equalsIgnoreCase("t")) {
+			int count = Integer.parseInt(par[par.length - 1]);
+			for (ItemStack it : p.getInventory()) {
+				if (it != null) {
+					if (it.getItemMeta() != null) {
+						if (it.getItemMeta().getLore() != null) {
+							boolean yes = true;
+							for (int i = 1; i < par.length - 1; ++i) {
+								if (!it.getItemMeta().getLore().contains(par[i])) {
+									yes = false;
+									break;
+								}
+							}
+							if (yes) {
+								count -= it.getAmount();
+							}
+						}
+					}
+				}
+			}
+			return count <= 0;
+		} else {
+			String args[] = req.split(":");
+			int id = 0, count = 0, meta = 0;
+			if (args.length == 1) {
+				id = Integer.parseInt(args[0]);
+				count = 1;
+			} else if (args.length == 2) {
+				id = Integer.parseInt(args[0]);
+				count = Integer.parseInt(args[1]);
+			} else if (args.length == 3) {
+				id = Integer.parseInt(args[0]);
+				meta = Integer.parseInt(args[1]);
+				count = Integer.parseInt(args[2]);
+			}
+			ItemStack it = new ItemStack(id, 1, (short) meta);
+			if (!p.getInventory().containsAtLeast(it, count)) {
+				return false;
+			}
+			return true;
+		}
+	}
+
+	public static void takeItems(Player p, String items) {
+		for (String item : items.split(" ")) {
+			takeItem(p, item);
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public static void takeItem(Player p, String item) {
+		String par[] = item.split(":");
+		if (item.startsWith("$")) {
+			int count = Integer.parseInt(item.substring(1));
+			Building.econ.withdrawPlayer(p.getName(), count);
+		} else if (par[0].equalsIgnoreCase("m")) {
+			ItemStack it = createFromString(item);
+			p.getInventory().removeItem(it);
+		} else if (par[0].equalsIgnoreCase("t")) {
+			int count = Integer.parseInt(par[par.length - 1]);
+			for (ItemStack it : p.getInventory()) {
+				if (it != null) {
+					if (it.getItemMeta() != null) {
+						if (it.getItemMeta().getLore() != null) {
+							boolean yes = true;
+							for (int i = 1; i < par.length - 1; ++i) {
+								if (!it.getItemMeta().getLore().contains(par[i])) {
+									yes = false;
+									break;
+								}
+							}
+							if (yes) {
+								p.getInventory().removeItem(it);
+								count -= it.getAmount();
+								if (count <= 0) return;
+							}
+						}
+					}
+				}
+			}
+		} else {
+			int id = 0, count = 0, meta = 0;
+			if (par.length == 1) {
+				id = Integer.parseInt(par[0]);
+				count = 1;
+			} else if (par.length == 2) {
+				id = Integer.parseInt(par[0]);
+				count = Integer.parseInt(par[1]);
+			} else if (par.length == 3) {
+				id = Integer.parseInt(par[0]);
+				meta = Integer.parseInt(par[1]);
+				count = Integer.parseInt(par[2]);
+			}
+			p.getInventory().removeItem(new ItemStack(id, count, (short) meta));
+		}
+	}
 }

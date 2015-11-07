@@ -18,9 +18,11 @@ public class BuildingTemplate {
 		x_size = config.getInt("x_size");
 		y_size = config.getInt("y_size");
 		z_size = config.getInt("z_size");
-		reward = config.getString("reward");
+		input = config.getString("input");
+		output = config.getString("output");
 		interval = config.getInt("interval");
 		template_width = config.getInt("width");
+		storage_cap = config.getInt("storage");
 		List<String> template = config.getStringList("template");
 		template_height = template.size() / template_width;
 		List<String> typelist = config.getStringList("typelist");
@@ -83,8 +85,11 @@ public class BuildingTemplate {
 	public int getInterval() {
 		return interval;
 	}
-	public String getReward() {
-		return reward;
+	public String getInput() {
+		return input;
+	}
+	public String getOutput() {
+		return output;
 	}
 	public String getName() {
 		return name;
@@ -142,6 +147,12 @@ public class BuildingTemplate {
 	private int template_width;
 	private int template_height;
 	private int interval;
-	private String reward;
+	private String output;
+	private String input;
+	private int storage_cap;
+	public int getStorage_cap() {
+		return storage_cap;
+	}
+
 	private int[][][][] template_ids;
 }
