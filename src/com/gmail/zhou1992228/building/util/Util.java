@@ -20,4 +20,21 @@ public class Util {
         }
 		return YamlConfiguration.loadConfiguration(file);
 	}
+    
+    public static void SaveConfigToName(FileConfiguration config, String fileName) {
+    	File file = new File(Building.ins.getDataFolder(), fileName);
+    	if (file == null || !file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    	try {
+			config.save(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 }

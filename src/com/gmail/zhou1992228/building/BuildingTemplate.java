@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -29,7 +28,6 @@ public class BuildingTemplate {
 		for (int i = 0; i < typelist.size(); ++i) {
 			String[] s = typelist.get(i).split(":");
 			ids.put(s[0], s[1]);
-			Bukkit.getLogger().info("##" + s[0] + "::" + s[1] + "!!");
 		}
 		name = config.getString("name");
 		template_ids = new int[8][template_width][template_height][template_width];
@@ -57,6 +55,19 @@ public class BuildingTemplate {
 			for (int z = 0; z < template_width; ++z) {
 				template_ids[i][x][y][z] = template_ids[i - 1][template_width - z - 1][y][x];
 				template_ids[i + 4][x][y][z] = template_ids[i + 3][template_width - z - 1][y][x];
+			}
+		}
+		
+		for (int i = 0; i < 8; ++i) {
+			for (int y = 0; y < template_height; ++y) {
+				String output = "\n";
+				for (int x = 0; x < template_width; ++x) {
+					for (int z = 0; z < template_width; ++z) {
+						output += template_ids[i][x][y][z] + " ";
+					}
+					output += "\n";
+				}
+				Building.LOG(output);
 			}
 		}
 	}
