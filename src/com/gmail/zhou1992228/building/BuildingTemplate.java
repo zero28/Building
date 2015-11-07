@@ -18,11 +18,12 @@ public class BuildingTemplate {
 		x_size = config.getInt("x_size");
 		y_size = config.getInt("y_size");
 		z_size = config.getInt("z_size");
-		input = config.getString("input");
-		output = config.getString("output");
+		input = config.getString("input", "");
+		output = config.getString("output", "");
 		interval = config.getInt("interval");
 		template_width = config.getInt("width");
 		storage_cap = config.getInt("storage");
+		reward_message = config.getString("reward_message", "");
 		List<String> template = config.getStringList("template");
 		template_height = template.size() / template_width;
 		List<String> typelist = config.getStringList("typelist");
@@ -59,7 +60,7 @@ public class BuildingTemplate {
 				template_ids[i + 4][x][y][z] = template_ids[i + 3][template_width - z - 1][y][x];
 			}
 		}
-		
+		/*
 		for (int i = 0; i < 8; ++i) {
 			for (int y = 0; y < template_height; ++y) {
 				String output = "\n";
@@ -72,6 +73,7 @@ public class BuildingTemplate {
 				Building.LOG(output);
 			}
 		}
+		*/
 	}
 	public int getX_size() {
 		return x_size;
@@ -87,6 +89,9 @@ public class BuildingTemplate {
 	}
 	public String getInput() {
 		return input;
+	}
+	public String getRewardMessage() {
+		return reward_message;
 	}
 	public String getOutput() {
 		return output;
@@ -150,6 +155,7 @@ public class BuildingTemplate {
 	private String output;
 	private String input;
 	private int storage_cap;
+	private String reward_message;
 	public int getStorage_cap() {
 		return storage_cap;
 	}

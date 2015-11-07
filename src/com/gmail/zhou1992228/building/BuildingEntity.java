@@ -37,6 +37,7 @@ public class BuildingEntity {
 		input_count_ = config.getInt("input_count");
 		output_count_ = config.getInt("output_count");
 		time_counter_ = config.getInt("time_counter");
+		name_ = config.getString("name");
 		template_ = BuildingTemplate.building_templates.get(building_type_);
 	}
 	public void Save(ConfigurationSection config) {
@@ -49,6 +50,7 @@ public class BuildingEntity {
 		config.set("input_count", input_count_);
 		config.set("output_count", output_count_);
 		config.set("time_counter", time_counter_);
+		config.set("name", name_);
 	}
 	
 	public Location getPos() {
@@ -62,9 +64,12 @@ public class BuildingEntity {
 	}
 	public void onUpdate() {
 		time_counter_++;
+		if (template_ == null) {
+			return;
+		}
 		if (time_counter_ >= template_.getInterval()) {
 			if (template_.getInput().isEmpty() || input_count_ > 0) {
-				if (template_.getStorage_cap() < output_count_) {
+				if (template_.getStorage_cap() > output_count_) {
 					--input_count_; ++output_count_;
 				}
 			}
@@ -85,6 +90,7 @@ public class BuildingEntity {
 			--output_count_;
 			--count;
 			Util.giveItems(p, template_.getOutput());
+			p.sendMessage("你从 " + name_ + " 处 获得 " + template_.getRewardMessage());
 		}
 	}
 	

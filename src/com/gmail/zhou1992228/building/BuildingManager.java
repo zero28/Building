@@ -63,7 +63,6 @@ public class BuildingManager {
 		if (template != null) {
 			Location loc = template.Match(p.getLocation());
 			if (loc != null) {
-				Building.LOG("template loc: " + loc.toString());
 				if (CollideWithOtherBuilding(loc, template)) {
 					p.sendMessage("建筑与已存在的建筑冲突！");
 				} else {
@@ -71,10 +70,11 @@ public class BuildingManager {
 					buildings_.add(new BuildingEntity(p.getName(), loc, building_name, custom_name));
 				}
 			} else {
-				Building.LOG("NOT MATCH!");
+				p.sendMessage("再看看设计图吧？");
 			}
+		} else {
+			p.sendMessage("没有这个建筑");
 		}
-		// TODO
 	}
 	public void ValidateBuildings() {
 		// TODO
@@ -94,7 +94,6 @@ public class BuildingManager {
 			Location loc2 = loc.add(-(template.getX_size() / 2),
 					-(template.getY_size() / 2),
 					-(template.getZ_size() / 2));
-			Building.LOG("loc1: " + loc1.toString() + "\nloc2: " + loc2.toString());
 			if (building.Collide(loc1, loc2)) {
 				return true;
 			}
