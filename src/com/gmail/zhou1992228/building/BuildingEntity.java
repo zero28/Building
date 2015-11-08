@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 import com.gmail.zhou1992228.building.util.Util;
@@ -119,8 +120,24 @@ public class BuildingEntity {
 		p.sendMessage("已放入材料");
 	}
 
-	public void onDamage(Entity entity) {
-		// TODO
+	public void tryDamage(Entity entity) {
+		if (entity instanceof Player) {
+			Player p = (Player) entity;
+			if (p.getName().equals(owner_)) {
+				return;
+			}
+			Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被玩家 " + p.getName() + " 破坏！");
+			if (health_ < 100) {
+				Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被玩家 " + p.getName() + " 破坏！耐久度即将耗尽！");
+			}
+			health_ -= 5;
+		} else if (entity instanceof Monster) {
+			Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被怪物破坏！");
+			if (health_ < 100) {
+				Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被怪物破坏！耐久度即将耗尽！");
+			}
+			health_ -= 3;
+		}
 	}
 	
 	public boolean Collide(Location loc1, Location loc2) {
@@ -172,6 +189,9 @@ public class BuildingEntity {
 			return false;
 		}
 		pos_ = new_loc;
+		if (health_ <= 0) {
+			return false;
+		}
 		return true;
 	}
 	

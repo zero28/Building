@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -13,8 +15,7 @@ import com.gmail.zhou1992228.building.util.Util;
 
 public class BuildingManager {
 	public static BuildingManager ins = new BuildingManager();
-	public BuildingManager() {
-	}
+	public BuildingManager() { }
 	public void Init(Building plugin) {
 		buildings_ = new ArrayList<BuildingEntity>();
 		FileConfiguration config = Util.getConfigWithName("template.yml");
@@ -48,7 +49,7 @@ public class BuildingManager {
 		}
 	}
 	public void Save() {
-		FileConfiguration config = Util.getConfigWithName("buildings.yml");
+		FileConfiguration config = Util.getConfigWithName("empty.yml");
 		for (int i = 0; i < buildings_.size(); ++i) {
 			buildings_.get(i).Save(config.createSection(i + ""));
 		}
@@ -91,11 +92,25 @@ public class BuildingManager {
 			}
 		}
 	}
-	public BuildingEntity InBuilding(Entity e) {
-		return null;
+	
+	public void DamageBuildings() {
+		for (World w : Bukkit.getWorlds()) {
+			for (Entity e : w.getEntities()) {
+				BuildingEntity building = InBuilding(e);
+				if (building != null) {
+					building.tryDamage(e);
+				}
+			}
+		}
 	}
-	public void DamageBuilding(Entity e) {
-		// TODO
+	
+	public BuildingEntity InBuilding(Entity e) {
+		for (BuildingEntity b : buildings_) {
+			if (b.inBuilding(e.getLocation())) {
+				return b;
+			}
+		}
+		return null;
 	}
 	
 	private boolean CollideWithOtherBuilding(Location loc, BuildingTemplate template) {
@@ -111,12 +126,6 @@ public class BuildingManager {
 			}
 		}
 		return false;
-		// TODO
-	}
-	
-	private boolean RemoveBuilding() {
-		return true;
-		// TODO
 	}
 	
 	private List<BuildingEntity> buildings_;
