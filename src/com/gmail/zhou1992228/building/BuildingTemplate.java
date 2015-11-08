@@ -15,6 +15,7 @@ public class BuildingTemplate {
 		building_templates.put(name, new BuildingTemplate(config));
 	}
 	public BuildingTemplate(ConfigurationSection config) {
+		max_health = config.getInt("max_health", 1000);
 		x_size = config.getInt("x_size");
 		y_size = config.getInt("y_size");
 		z_size = config.getInt("z_size");
@@ -24,6 +25,7 @@ public class BuildingTemplate {
 		template_width = config.getInt("width");
 		storage_cap = config.getInt("storage");
 		reward_message = config.getString("reward_message", "");
+		other_require = config.getString("other_require", "");
 		List<String> template = config.getStringList("template");
 		template_height = template.size() / template_width;
 		List<String> typelist = config.getStringList("typelist");
@@ -93,6 +95,9 @@ public class BuildingTemplate {
 	public String getRewardMessage() {
 		return reward_message;
 	}
+	public String getOtherRequire() {
+		return other_require;
+	}
 	public String getOutput() {
 		return output;
 	}
@@ -149,6 +154,7 @@ public class BuildingTemplate {
 	private int x_size;
 	private int y_size;
 	private int z_size;
+	private int max_health;
 	private int template_width;
 	private int template_height;
 	private int interval;
@@ -156,8 +162,12 @@ public class BuildingTemplate {
 	private String input;
 	private int storage_cap;
 	private String reward_message;
+	private String other_require;
 	public int getStorage_cap() {
 		return storage_cap;
+	}
+	public int getMaxHealth() {
+		return max_health;
 	}
 
 	private int[][][][] template_ids;

@@ -1,6 +1,7 @@
 package com.gmail.zhou1992228.building;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -66,8 +67,12 @@ public class BuildingManager {
 				if (CollideWithOtherBuilding(loc, template)) {
 					p.sendMessage("建筑与已存在的建筑冲突！");
 				} else {
-					p.sendMessage(building_name + " 建设成功！");
-					buildings_.add(new BuildingEntity(p.getName(), loc, building_name, custom_name));
+					if (Util.takeRequires(p, template.getOtherRequire())) {
+						p.sendMessage(building_name + " 建设成功！");
+						buildings_.add(new BuildingEntity(p.getName(), loc, building_name, custom_name));
+					} else {
+						p.sendMessage("你没有足够的物品/金钱来建设这个建筑");
+					}
 				}
 			} else {
 				p.sendMessage("再看看设计图吧？");
@@ -77,7 +82,14 @@ public class BuildingManager {
 		}
 	}
 	public void ValidateBuildings() {
-		// TODO
+		Iterator<BuildingEntity> it = buildings_.iterator();
+		while (it.hasNext()) {
+			BuildingEntity b = it.next();
+			if (!b.Validate()) {
+				Util.NotifyIfOnline(b.getOwner(), "你的 " + b.getName() + " 已被破坏");
+				it.remove();
+			}
+		}
 	}
 	public BuildingEntity InBuilding(Entity e) {
 		return null;
@@ -103,11 +115,6 @@ public class BuildingManager {
 	}
 	
 	private boolean RemoveBuilding() {
-		return true;
-		// TODO
-	}
-	
-	private boolean AddBuilding() {
 		return true;
 		// TODO
 	}

@@ -15,6 +15,7 @@ public class BuildingEntity {
 		building_type_ = type;
 		name_ = owner + " µÄ " + type;
 		template_ = BuildingTemplate.building_templates.get(building_type_);
+		health_ = template_.getMaxHealth();
 	}
 	public BuildingEntity(String owner, Location pos, String type, String name) {
 		pos_ = pos;
@@ -26,6 +27,7 @@ public class BuildingEntity {
 			name_ = name;
 		}
 		template_ = BuildingTemplate.building_templates.get(building_type_);
+		health_ = template_.getMaxHealth();
 	}
 	public BuildingEntity(ConfigurationSection config) {
 		building_type_ = config.getString("type");
@@ -38,6 +40,7 @@ public class BuildingEntity {
 		output_count_ = config.getInt("output_count");
 		time_counter_ = config.getInt("time_counter");
 		name_ = config.getString("name");
+		health_ = config.getInt("health");
 		template_ = BuildingTemplate.building_templates.get(building_type_);
 	}
 	public void Save(ConfigurationSection config) {
@@ -50,6 +53,7 @@ public class BuildingEntity {
 		config.set("input_count", input_count_);
 		config.set("output_count", output_count_);
 		config.set("time_counter", time_counter_);
+		config.set("health", health_);
 		config.set("name", name_);
 	}
 	
@@ -61,6 +65,9 @@ public class BuildingEntity {
 	}
 	public String getOwner() {
 		return owner_;
+	}
+	public String getName() {
+		return name_;
 	}
 	public void onUpdate() {
 		time_counter_++;
@@ -135,6 +142,9 @@ public class BuildingEntity {
 	}
 	
 	public boolean inBuilding(Location loc) {
+		if (!loc.getWorld().getName().equals(pos_.getWorld().getName())) {
+			return false;
+		}
 		int max_x = pos_.getBlockX()
 				  + template_.getX_size() / 2;
 		int min_x = pos_.getBlockX()
@@ -152,7 +162,21 @@ public class BuildingEntity {
 			   (min_z <= loc.getBlockZ() && loc.getBlockZ() <= max_z);
 	}
 	
+	public boolean isDestoried() {
+		return health_ <= 0;
+	}
+	
+	public boolean Validate() {
+		Location new_loc = template_.Match(pos_);
+		if (new_loc == null) {
+			return false;
+		}
+		pos_ = new_loc;
+		return true;
+	}
+	
 	private Location pos_;
+	private int health_;
 	private String building_type_;
 	private int time_counter_;
 	private String owner_;

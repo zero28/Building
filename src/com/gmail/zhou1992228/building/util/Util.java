@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -27,6 +28,13 @@ public class Util {
 		return YamlConfiguration.loadConfiguration(file);
 	}
     
+    public static void NotifyIfOnline(String player_name, String message) {
+    	Player p = Bukkit.getPlayer(player_name);
+    	if (p != null) {
+    		p.sendMessage(message);
+    	}
+    }
+    
     public static void SaveConfigToName(FileConfiguration config, String fileName) {
     	File file = new File(Building.ins.getDataFolder(), fileName);
     	if (file == null || !file.exists()) {
@@ -45,6 +53,9 @@ public class Util {
     }
    
 	public static void giveItems(Player p, String items) {
+		if (items == null || items.isEmpty()) {
+			return;
+		}
 		for (String item : items.split(" ")) {
 			giveItem(p, item);
 		}
@@ -114,7 +125,19 @@ public class Util {
 			return null;
 		}
 	}
+	
+	public static boolean takeRequires(Player p, String requires) {
+		if (haveRequires(p, requires)) {
+			takeItems(p, requires);
+			return true;
+		}
+		return false;
+	}
+	
 	public static boolean haveRequires(Player p, String requires) {
+		if (requires == null || requires.isEmpty()) {
+			return true;
+		}
 		for (String req : requires.split(" ")) {
 			if (!haveRequire(p, req)) {
 				return false;
@@ -188,6 +211,9 @@ public class Util {
 	}
 
 	public static void takeItems(Player p, String items) {
+		if (items == null || items.isEmpty()) {
+			return;
+		}
 		for (String item : items.split(" ")) {
 			takeItem(p, item);
 		}

@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.gmail.zhou1992228.building.command.CommandAddBuilding;
 import com.gmail.zhou1992228.building.command.CommandCollect;
 import com.gmail.zhou1992228.building.task.TaskUpdateBuilding;
+import com.gmail.zhou1992228.building.task.TaskValidateBuilding;
 
 public class Building extends JavaPlugin {
 
@@ -36,6 +37,7 @@ public class Building extends JavaPlugin {
 		this.getCommand("ttbd").setExecutor(new CommandAddBuilding());
 		this.getCommand("collect").setExecutor(new CommandCollect());
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskUpdateBuilding(), 5 * 20, 5 * 20);
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskValidateBuilding(), 10 * 20, 10 * 20);
 		BuildingManager.ins.Init(this);
 	}
 	
