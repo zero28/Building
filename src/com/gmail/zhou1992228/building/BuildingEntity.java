@@ -195,6 +195,22 @@ public class BuildingEntity {
 		return true;
 	}
 	
+	public void putInput(Player p, int count) {
+		if (template_.getInput().isEmpty()) {
+			p.sendMessage("此建筑不需要添加材料");
+			return;
+		}
+		while (count > 0) {
+			if (Util.takeRequires(p, template_.getInput())) {
+				--count;
+				++input_count_;
+			} else {
+				p.sendMessage("你没有足够的材料了");
+			}
+		}
+		p.sendMessage("材料添加成功");
+	}
+	
 	private Location pos_;
 	private int health_;
 	private String building_type_;
