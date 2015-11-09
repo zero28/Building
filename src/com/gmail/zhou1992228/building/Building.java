@@ -36,6 +36,7 @@ public class Building extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		ins = this;
+		setupEconomy();
 		this.getCommand("ttbd").setExecutor(new CommandAddBuilding());
 		this.getCommand("collect").setExecutor(new CommandCollect());
 		this.getCommand("put").setExecutor(new CommandPut());
