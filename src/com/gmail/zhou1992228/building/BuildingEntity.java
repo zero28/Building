@@ -227,6 +227,8 @@ public class BuildingEntity {
 				Player p = (Player) e;
 				Util.giveItems(p, template_.getOutput());
 				robber = p.getName();
+				p.sendMessage(String.format("你从 %s 的 %s 中 抢走了 %s",
+						owner_, name_, template_.getRewardMessage()));
 			}
 			--output_count_;
 			Util.NotifyIfOnline(

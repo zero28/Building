@@ -12,7 +12,11 @@ public class CommandAddBuilding implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender arg0, Command arg1, String arg2,
 			String[] arg3) {
-		BuildingManager.ins.TryAddBuilding((Player) arg0, arg3[0]);
+		if (arg3.length > 1) {
+			BuildingManager.ins.TryAddBuilding((Player) arg0, arg3[0], arg3[1]);
+		} else {
+			BuildingManager.ins.TryAddBuilding((Player) arg0, arg3[0]);
+		}
 		return true;
 	}
 }
