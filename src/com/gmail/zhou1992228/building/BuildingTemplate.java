@@ -24,6 +24,7 @@ public class BuildingTemplate {
 		interval = config.getInt("interval");
 		template_width = config.getInt("width");
 		storage_cap = config.getInt("storage");
+		rob_pos = config.getInt("rob_pos");
 		reward_message = config.getString("reward_message", "");
 		other_require = config.getString("other_require", "");
 		List<String> template = config.getStringList("template");
@@ -163,8 +164,12 @@ public class BuildingTemplate {
 	private int storage_cap;
 	private String reward_message;
 	private String other_require;
+	private int rob_pos;
 	public int getStorage_cap() {
 		return storage_cap;
+	}
+	public int getRobPos() {
+		return rob_pos;
 	}
 	public int getMaxHealth() {
 		return max_health;

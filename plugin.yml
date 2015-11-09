@@ -7,4 +7,7 @@ commands:
     usage: /<command>
   collect:
     description: Collection the resources from the building.
-    usage: /<command>
+    usage: /<command> [count]
+  put:
+    description:  the resources from the building.
+    usage: /<command> [count]

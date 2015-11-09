@@ -1,5 +1,7 @@
 package com.gmail.zhou1992228.building;
 
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -10,6 +12,7 @@ import org.bukkit.entity.Player;
 import com.gmail.zhou1992228.building.util.Util;
 
 public class BuildingEntity {
+	public static Random random = new Random();
 	public BuildingEntity(String owner, Location pos, String type) {
 		pos_ = pos;
 		owner_ = owner;
@@ -131,12 +134,18 @@ public class BuildingEntity {
 				Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被玩家 " + p.getName() + " 破坏！耐久度即将耗尽！");
 			}
 			health_ -= 5;
+			if (random.nextInt() < template_.getRobPos()) {
+				onRob(entity);
+			}
 		} else if (entity instanceof Monster) {
 			Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被怪物破坏！");
 			if (health_ < 100) {
 				Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被怪物破坏！耐久度即将耗尽！");
 			}
 			health_ -= 3;
+			if (random.nextInt() < template_.getRobPos()) {
+				onRob(entity);
+			}
 		}
 	}
 	
@@ -209,6 +218,22 @@ public class BuildingEntity {
 			}
 		}
 		p.sendMessage("材料添加成功");
+	}
+
+	private void onRob(Entity e) {
+		if (output_count_ > 0) {
+			String robber = "怪物";
+			if (e instanceof Player) {
+				Player p = (Player) e;
+				Util.giveItems(p, template_.getOutput());
+				robber = p.getName();
+			}
+			--output_count_;
+			Util.NotifyIfOnline(
+					owner_, String.format("你的 %s 中的物品被 %s 抢走了一些",
+										  name_,
+										  robber));
+		}
 	}
 	
 	private Location pos_;
