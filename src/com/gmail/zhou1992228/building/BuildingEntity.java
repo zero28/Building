@@ -29,10 +29,12 @@ public abstract class BuildingEntity {
 		return null;
 	}
 	public static BuildingEntity createBuildingEntity(ConfigurationSection config) {
-		if (config.getString("type", "").equalsIgnoreCase("Resource")) {
+		BuildingTemplate bt = BuildingTemplate.building_templates.get(
+				config.getString("building_name"));
+		if (bt.getType().equalsIgnoreCase("Resource")) {
 			return new ResourceBuilding(config);
 		}
-		if (config.getString("type", "").equalsIgnoreCase("Minitary")) {
+		if (bt.getType().equalsIgnoreCase("Military")) {
 			return new ResourceBuilding(config);
 		}
 		return null;
@@ -68,12 +70,12 @@ public abstract class BuildingEntity {
 		input_count_ = config.getInt("input_count");
 		output_count_ = config.getInt("output_count");
 		time_counter_ = config.getInt("time_counter");
-		name_ = config.getString("name");
+		name_ = config.getString("custom_name");
 		health_ = config.getInt("health");
 		template_ = BuildingTemplate.building_templates.get(building_name);
 	}
 	public void Save(ConfigurationSection config) {
-		config.set("type", building_name);
+		config.set("building_name", building_name);
 		config.set("owner", owner_);
 		config.set("world", pos_.getWorld().getName());
 		config.set("x", pos_.getBlockX());
@@ -83,7 +85,8 @@ public abstract class BuildingEntity {
 		config.set("output_count", output_count_);
 		config.set("time_counter", time_counter_);
 		config.set("health", health_);
-		config.set("name", name_);
+		config.set("custom_name", name_);
+		Building.LOG("instance of " + name_);
 	}
 	
 	public Location getPos() {

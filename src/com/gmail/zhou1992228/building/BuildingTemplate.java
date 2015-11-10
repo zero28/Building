@@ -152,6 +152,16 @@ public class BuildingTemplate {
 		return true;
 	}
 	
+	@SuppressWarnings("deprecation")
+	public void BuildAt(Location loc) {
+		for (int i = 0; i < template_width; ++i)
+		for (int j = 0; j < template_height; ++j)
+		for (int k = 0; k < template_width; ++k) {
+			loc.getWorld().getBlockAt(loc.getBlockX() + i, loc.getBlockY() + j, loc.getBlockZ() + k)
+				.setTypeId(template_ids[0][i][j][k]);
+		}	
+	}
+	
 	private String name;
 	private int x_size;
 	private int y_size;

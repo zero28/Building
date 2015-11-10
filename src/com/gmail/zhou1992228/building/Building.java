@@ -1,5 +1,7 @@
 package com.gmail.zhou1992228.building;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -7,11 +9,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.gmail.zhou1992228.building.command.CommandAddBuilding;
 import com.gmail.zhou1992228.building.command.CommandCollect;
 import com.gmail.zhou1992228.building.command.CommandPut;
+import com.gmail.zhou1992228.building.command.CommandTestBuild;
 import com.gmail.zhou1992228.building.task.TaskDamageBuildings;
 import com.gmail.zhou1992228.building.task.TaskUpdateBuilding;
 import com.gmail.zhou1992228.building.task.TaskValidateBuilding;
-
-import net.milkbowl.vault.economy.Economy;
 
 public class Building extends JavaPlugin {
 
@@ -40,6 +41,7 @@ public class Building extends JavaPlugin {
 		this.getCommand("ttbd").setExecutor(new CommandAddBuilding());
 		this.getCommand("collect").setExecutor(new CommandCollect());
 		this.getCommand("put").setExecutor(new CommandPut());
+		this.getCommand("testbuild").setExecutor(new CommandTestBuild());
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskUpdateBuilding(), 5 * 20, 5 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskValidateBuilding(), 10 * 20, 10 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskDamageBuildings(), 10 * 20, 10 * 20);

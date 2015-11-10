@@ -11,3 +11,6 @@ commands:
   put:
     description:  the resources from the building.
     usage: /<command> [count]
+  testbuild:
+    description:  build a building, op only
+    usage: /<command> <building_name>
