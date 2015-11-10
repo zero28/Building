@@ -30,7 +30,8 @@ public class BuildingManager {
 	public void Load() {
 		FileConfiguration config = Util.getConfigWithName("buildings.yml");
 		for (String key : config.getKeys(false)) {
-			buildings_.add(new BuildingEntity(config.getConfigurationSection(key)));
+			buildings_.add(BuildingEntity.createBuildingEntity(
+					config.getConfigurationSection(key)));
 		}
 	}
 	
@@ -70,7 +71,8 @@ public class BuildingManager {
 				} else {
 					if (Util.takeRequires(p, template.getOtherRequire())) {
 						p.sendMessage(building_name + " 建设成功！");
-						buildings_.add(new BuildingEntity(p.getName(), loc, building_name, custom_name));
+						buildings_.add(BuildingEntity.createBuildingEntity(
+								p.getName(), loc, building_name, custom_name));
 					} else {
 						p.sendMessage("你没有足够的物品/金钱来建设这个建筑");
 					}

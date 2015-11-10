@@ -13,28 +13,48 @@ import com.gmail.zhou1992228.building.util.Util;
 
 public class BuildingEntity {
 	public static Random random = new Random();
-	public BuildingEntity(String owner, Location pos, String type) {
+	
+	public static BuildingEntity createBuildingEntity(
+			String owner, Location pos, String building_name) {
+		return createBuildingEntity(owner, pos, building_name, "");
+	}
+	public static BuildingEntity createBuildingEntity(
+			String owner, Location pos, String building_name, String name) {
+		BuildingTemplate bt = BuildingTemplate.building_templates.get(building_name);
+		if (bt.getType().equals("Resource")) {
+			return new ResourceBuilding(owner, pos, building_name, name);
+		}
+		return null;
+	}
+	public static BuildingEntity createBuildingEntity(ConfigurationSection config) {
+		if (config.getString("type", "").equals("Resource")) {
+			return new ResourceBuilding(config);
+		}
+		return null;
+	}
+	
+	protected BuildingEntity(String owner, Location pos, String building_name) {
 		pos_ = pos;
 		owner_ = owner;
-		building_type_ = type;
-		name_ = owner + " 的 " + type;
-		template_ = BuildingTemplate.building_templates.get(building_type_);
+		this.building_name = building_name;
+		name_ = owner + " 的 " + building_name;
+		template_ = BuildingTemplate.building_templates.get(building_name);
 		health_ = template_.getMaxHealth();
 	}
-	public BuildingEntity(String owner, Location pos, String type, String name) {
+	protected BuildingEntity(String owner, Location pos, String building_name, String name) {
 		pos_ = pos;
 		owner_ = owner;
-		building_type_ = type;
+		this.building_name = building_name;
 		if (name.isEmpty()) {
-			name_ = owner + " 的 " + type;
+			name_ = owner + " 的 " + building_name;
 		} else {
 			name_ = name;
 		}
-		template_ = BuildingTemplate.building_templates.get(building_type_);
+		template_ = BuildingTemplate.building_templates.get(building_name);
 		health_ = template_.getMaxHealth();
 	}
-	public BuildingEntity(ConfigurationSection config) {
-		building_type_ = config.getString("type");
+	protected BuildingEntity(ConfigurationSection config) {
+		building_name = config.getString("building_name");
 		owner_ = config.getString("owner");
 		pos_ = new Location(Bukkit.getWorld(config.getString("world")),
 							config.getInt("x"),
@@ -45,10 +65,10 @@ public class BuildingEntity {
 		time_counter_ = config.getInt("time_counter");
 		name_ = config.getString("name");
 		health_ = config.getInt("health");
-		template_ = BuildingTemplate.building_templates.get(building_type_);
+		template_ = BuildingTemplate.building_templates.get(building_name);
 	}
 	public void Save(ConfigurationSection config) {
-		config.set("type", building_type_);
+		config.set("type", building_name);
 		config.set("owner", owner_);
 		config.set("world", pos_.getWorld().getName());
 		config.set("x", pos_.getBlockX());
@@ -65,7 +85,7 @@ public class BuildingEntity {
 		return pos_;
 	}
 	public String getBuilding_type() {
-		return building_type_;
+		return building_name;
 	}
 	public String getOwner() {
 		return owner_;
@@ -237,14 +257,14 @@ public class BuildingEntity {
 										  robber));
 		}
 	}
+	protected int input_count_;
+	protected int output_count_;
+	protected int health_;
+	protected int time_counter_;
 	
 	private Location pos_;
-	private int health_;
-	private String building_type_;
-	private int time_counter_;
+	private String building_name;
 	private String owner_;
-	private int input_count_;
-	private int output_count_;
 	private String name_;
 	private BuildingTemplate template_;
 }

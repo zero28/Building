@@ -19,6 +19,7 @@ public class BuildingTemplate {
 		x_size = config.getInt("x_size");
 		y_size = config.getInt("y_size");
 		z_size = config.getInt("z_size");
+		type = config.getString("type", "");
 		input = config.getString("input", "");
 		output = config.getString("output", "");
 		interval = config.getInt("interval");
@@ -164,6 +165,7 @@ public class BuildingTemplate {
 	private int storage_cap;
 	private String reward_message;
 	private String other_require;
+	private String type;
 	private int rob_pos;
 	public int getStorage_cap() {
 		return storage_cap;
@@ -173,6 +175,9 @@ public class BuildingTemplate {
 	}
 	public int getMaxHealth() {
 		return max_health;
+	}
+	public String getType() {
+		return type;
 	}
 
 	private int[][][][] template_ids;
