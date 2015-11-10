@@ -6,12 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 import com.gmail.zhou1992228.building.util.Util;
 
-public class BuildingEntity {
+public abstract class BuildingEntity {
 	public static Random random = new Random();
 	
 	public static BuildingEntity createBuildingEntity(
@@ -84,7 +83,7 @@ public class BuildingEntity {
 	public Location getPos() {
 		return pos_;
 	}
-	public String getBuilding_type() {
+	public String getBuildingName() {
 		return building_name;
 	}
 	public String getOwner() {
@@ -92,6 +91,9 @@ public class BuildingEntity {
 	}
 	public String getName() {
 		return name_;
+	}
+	public BuildingTemplate getTemplate() {
+		return template_;
 	}
 	public void onUpdate() {
 		time_counter_++;
@@ -108,22 +110,8 @@ public class BuildingEntity {
 		}
 	}
 	
-	public void getOutput(Player p, int count) {
-		if (!p.getName().equals(owner_)) {
-			p.sendMessage("你不是此建筑的主人！");
-			return;
-		}
-		if (output_count_ == 0) {
-			p.sendMessage("还没东西呢，不要这么急~");
-			return;
-		}
-		while (output_count_ > 0 && count > 0) {
-			--output_count_;
-			--count;
-			Util.giveItems(p, template_.getOutput());
-			p.sendMessage("你从 " + name_ + " 处 获得 " + template_.getRewardMessage());
-		}
-	}
+	abstract public void onCollect(Player p, int count);
+
 	
 	public void addInput(Player p, int count) {
 		if (template_.getInput().isEmpty()) {
@@ -143,31 +131,7 @@ public class BuildingEntity {
 		p.sendMessage("已放入材料");
 	}
 
-	public void tryDamage(Entity entity) {
-		if (entity instanceof Player) {
-			Player p = (Player) entity;
-			if (p.getName().equals(owner_)) {
-				return;
-			}
-			Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被玩家 " + p.getName() + " 破坏！");
-			if (health_ < 100) {
-				Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被玩家 " + p.getName() + " 破坏！耐久度即将耗尽！");
-			}
-			health_ -= 5;
-			if (random.nextInt() < template_.getRobPos()) {
-				onRob(entity);
-			}
-		} else if (entity instanceof Monster) {
-			Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被怪物破坏！");
-			if (health_ < 100) {
-				Util.NotifyIfOnline(owner_, "你的 " + name_ + " 正在被怪物破坏！耐久度即将耗尽！");
-			}
-			health_ -= 3;
-			if (random.nextInt() < template_.getRobPos()) {
-				onRob(entity);
-			}
-		}
-	}
+	abstract public void onDamage(Entity entity);
 	
 	public boolean Collide(Location loc1, Location loc2) {
 		int Xa = Math.abs(loc1.getBlockX() - loc2.getBlockX());
@@ -240,23 +204,6 @@ public class BuildingEntity {
 		p.sendMessage("材料添加成功");
 	}
 
-	private void onRob(Entity e) {
-		if (output_count_ > 0) {
-			String robber = "怪物";
-			if (e instanceof Player) {
-				Player p = (Player) e;
-				Util.giveItems(p, template_.getOutput());
-				robber = p.getName();
-				p.sendMessage(String.format("你从 %s 的 %s 中 抢走了 %s",
-						owner_, name_, template_.getRewardMessage()));
-			}
-			--output_count_;
-			Util.NotifyIfOnline(
-					owner_, String.format("你的 %s 中的物品被 %s 抢走了一些",
-										  name_,
-										  robber));
-		}
-	}
 	protected int input_count_;
 	protected int output_count_;
 	protected int health_;

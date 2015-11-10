@@ -25,10 +25,8 @@ public class CommandCollect implements CommandExecutor {
 				return true;
 			}
 			int count = 1;
-			try {
-				count = Integer.parseInt(arg3[0]);
-			} catch (Exception e) {}
-			building.getOutput(p, count);
+			try { count = Integer.parseInt(arg3[0]); } catch (Exception e) { }
+			building.onCollect(p, count);
 		}
 		return true;
 	}

@@ -100,7 +100,7 @@ public class BuildingManager {
 			for (Entity e : w.getEntities()) {
 				BuildingEntity building = InBuilding(e);
 				if (building != null) {
-					building.tryDamage(e);
+					building.onDamage(e);
 				}
 			}
 		}
