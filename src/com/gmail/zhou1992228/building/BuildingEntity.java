@@ -20,13 +20,19 @@ public abstract class BuildingEntity {
 	public static BuildingEntity createBuildingEntity(
 			String owner, Location pos, String building_name, String name) {
 		BuildingTemplate bt = BuildingTemplate.building_templates.get(building_name);
-		if (bt.getType().equals("Resource")) {
+		if (bt.getType().equalsIgnoreCase("Resource")) {
+			return new ResourceBuilding(owner, pos, building_name, name);
+		}
+		if (bt.getType().equalsIgnoreCase("Military")) {
 			return new ResourceBuilding(owner, pos, building_name, name);
 		}
 		return null;
 	}
 	public static BuildingEntity createBuildingEntity(ConfigurationSection config) {
-		if (config.getString("type", "").equals("Resource")) {
+		if (config.getString("type", "").equalsIgnoreCase("Resource")) {
+			return new ResourceBuilding(config);
+		}
+		if (config.getString("type", "").equalsIgnoreCase("Minitary")) {
 			return new ResourceBuilding(config);
 		}
 		return null;
