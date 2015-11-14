@@ -17,11 +17,11 @@ public class CommandPut implements CommandExecutor {
 			Player p = (Player) arg0;
 			BuildingEntity building = BuildingManager.ins.getNearBuilding(p);
 			if (building == null) {
-				p.sendMessage("ÄãµÄ¸½½üÃ»ÓĞ½¨Öş");
+				p.sendMessage("ä½ çš„é™„è¿‘æ²¡æœ‰å»ºç­‘");
 				return true;
 			}
 			if (!building.getOwner().equals(p.getName())) {
-				p.sendMessage("Õâ²»ÊÇÄãµÄ½¨Öş");
+				p.sendMessage("è¿™ä¸æ˜¯ä½ çš„å»ºç­‘");
 				return true;
 			}
 			int count = 1;

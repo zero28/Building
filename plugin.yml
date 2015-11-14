@@ -2,7 +2,7 @@ name: Building
 main: com.gmail.zhou1992228.building.Building
 version: 1.0
 commands:
-  ttbd:
+  build:
     description: test if a building ok
     usage: /<command>
   collect:

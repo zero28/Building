@@ -10,6 +10,7 @@ import com.gmail.zhou1992228.building.command.CommandAddBuilding;
 import com.gmail.zhou1992228.building.command.CommandCollect;
 import com.gmail.zhou1992228.building.command.CommandPut;
 import com.gmail.zhou1992228.building.command.CommandTestBuild;
+import com.gmail.zhou1992228.building.task.TaskBuildingAttack;
 import com.gmail.zhou1992228.building.task.TaskDamageBuildings;
 import com.gmail.zhou1992228.building.task.TaskUpdateBuilding;
 import com.gmail.zhou1992228.building.task.TaskValidateBuilding;
@@ -38,13 +39,14 @@ public class Building extends JavaPlugin {
 	public void onEnable() {
 		ins = this;
 		setupEconomy();
-		this.getCommand("ttbd").setExecutor(new CommandAddBuilding());
+		this.getCommand("build").setExecutor(new CommandAddBuilding());
 		this.getCommand("collect").setExecutor(new CommandCollect());
 		this.getCommand("put").setExecutor(new CommandPut());
 		this.getCommand("testbuild").setExecutor(new CommandTestBuild());
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskUpdateBuilding(), 5 * 20, 5 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskValidateBuilding(), 10 * 20, 10 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskDamageBuildings(), 10 * 20, 10 * 20);
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskBuildingAttack(), 1 * 20, 1 * 20);
 		BuildingManager.ins.Init(this);
 	}
 	

@@ -1,52 +1,64 @@
 package com.gmail.zhou1992228.building;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class BuildingTemplate {
 	public static HashMap<String, BuildingTemplate> building_templates =
 			new HashMap<String, BuildingTemplate>();
+	public static HashSet<Integer> whitelist_id = new HashSet<Integer>();
 	public static void AddBuildingTemplate(String name, ConfigurationSection config) {
 		building_templates.put(name, new BuildingTemplate(config));
 	}
 	public BuildingTemplate(ConfigurationSection config) {
+		template_width = config.getInt("width");
+		type = config.getString("type", "");
 		max_health = config.getInt("max_health", 1000);
+		interval = config.getInt("interval");
 		x_size = config.getInt("x_size");
 		y_size = config.getInt("y_size");
 		z_size = config.getInt("z_size");
-		type = config.getString("type", "");
 		input = config.getString("input", "");
+		output_per_resource = config.getInt("output_per_resource");
 		output = config.getString("output", "");
-		interval = config.getInt("interval");
-		template_width = config.getInt("width");
 		storage_cap = config.getInt("storage");
-		rob_pos = config.getInt("rob_pos");
 		reward_message = config.getString("reward_message", "");
 		other_require = config.getString("other_require", "");
+		rob_pos = config.getInt("rob_pos");
+		
+		attack_type = config.getString("attack_type");
+		attack_x_range = config.getInt("attack_x_range");
+		attack_y_range = config.getInt("attack_y_range");
+		attack_z_range = config.getInt("attack_z_range");
+		attack_rob_pos = config.getInt("attack_rob_pos");
+		max_target = config.getInt("max_target", 1);
+		
 		List<String> template = config.getStringList("template");
-		template_height = template.size() / template_width;
 		List<String> typelist = config.getStringList("typelist");
+		template_height = template.size() / template_width;
+		
 		Map<String, String> ids = new HashMap<String, String>();
 		for (int i = 0; i < typelist.size(); ++i) {
-			String[] s = typelist.get(i).split(":");
+			String[] s = typelist.get(i).split(":", 2);
 			ids.put(s[0], s[1]);
 		}
 		name = config.getString("name");
-		template_ids = new int[8][template_width][template_height][template_width];
+		template_ids = new String[8][template_width][template_height][template_width];
 		for (int l = 0; l < template.size(); ++l) {
 			int height = l / template_width;
 			int width = l % template_width;
 			for (int i = 0; i < template_width; ++i) {
 				if (ids.get(template.get(l).charAt(i) + "") == null) {
-					template_ids[0][i][height][width] = 0;
+					template_ids[0][i][height][width] = "0";
 				} else {
-					template_ids[0][i][height][width] = Integer.parseInt(
-						ids.get(template.get(l).charAt(i) + ""));
+					template_ids[0][i][height][width] = ids.get(template.get(l).charAt(i) + "");
 				}
 			}
 		}
@@ -64,7 +76,7 @@ public class BuildingTemplate {
 				template_ids[i + 4][x][y][z] = template_ids[i + 3][template_width - z - 1][y][x];
 			}
 		}
-		/*
+		
 		for (int i = 0; i < 8; ++i) {
 			for (int y = 0; y < template_height; ++y) {
 				String output = "\n";
@@ -77,7 +89,6 @@ public class BuildingTemplate {
 				Building.LOG(output);
 			}
 		}
-		*/
 	}
 	public int getX_size() {
 		return x_size;
@@ -138,14 +149,13 @@ public class BuildingTemplate {
 		return null;
 	}
 	
-	@SuppressWarnings("deprecation")
 	private boolean MatchType(int type, int ox, int oy, int oz, World world) {
 		for (int i = 0; i < template_width; ++i)
 		for (int j = 0; j < template_height; ++j)
 		for (int k = 0; k < template_width; ++k) {
-			if (template_ids[type][i][j][k] != 0 &&
-				world.getBlockAt(ox + i, oy + j, oz + k).getTypeId() !=
-				template_ids[type][i][j][k]) {
+			if (!template_ids[type][i][j][k].equals("0") &&
+				!Match(world.getBlockAt(ox + i, oy + j, oz + k),
+					   template_ids[type][i][j][k])) {
 				return false;
 			}
 		}
@@ -153,12 +163,33 @@ public class BuildingTemplate {
 	}
 	
 	@SuppressWarnings("deprecation")
+	private boolean Match(Block block, String type) {
+		String s = "" + block.getTypeId();
+		try {
+			if (block.getData() != 0 && !whitelist_id.contains(Integer.parseInt(type))) {
+				s += ":" + ((int)(block.getData()));
+			}
+		} catch (Exception e) {}
+		return s.equals(type);
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void SetBlock(Block block, String type) {
+		String x[] = type.split(":");
+		if (x.length == 1) {
+			block.setTypeId(Integer.parseInt(x[0]));
+		} else {
+			block.setTypeId(Integer.parseInt(x[0]));
+			block.setData((byte) Integer.parseInt(x[0]));
+		}
+	}
+	
 	public void BuildAt(Location loc) {
 		for (int i = 0; i < template_width; ++i)
 		for (int j = 0; j < template_height; ++j)
 		for (int k = 0; k < template_width; ++k) {
-			loc.getWorld().getBlockAt(loc.getBlockX() + i, loc.getBlockY() + j, loc.getBlockZ() + k)
-				.setTypeId(template_ids[0][i][j][k]);
+			SetBlock(loc.getWorld().getBlockAt(loc.getBlockX() + i, loc.getBlockY() + j, loc.getBlockZ() + k),
+					 template_ids[0][i][j][k]);
 		}	
 	}
 	
@@ -176,12 +207,35 @@ public class BuildingTemplate {
 	private String reward_message;
 	private String other_require;
 	private String type;
+	private String attack_type;
 	private int rob_pos;
+	private int attack_rob_pos;
+	private int output_per_resource;
+	private int max_target;
+	private int attack_x_range, attack_y_range, attack_z_range;
+	public int getAttack_x_range() {
+		return attack_x_range;
+	}
+	public int getAttack_y_range() {
+		return attack_y_range;
+	}
+	public int getAttack_z_range() {
+		return attack_z_range;
+	}
+	public int getMax_target() {
+		return max_target;
+	}
+	public int getOutputPerResource() {
+		return output_per_resource;
+	}
 	public int getStorage_cap() {
 		return storage_cap;
 	}
 	public int getRobPos() {
 		return rob_pos;
+	}
+	public int getAttackRobPos() {
+		return attack_rob_pos;
 	}
 	public int getMaxHealth() {
 		return max_health;
@@ -189,6 +243,9 @@ public class BuildingTemplate {
 	public String getType() {
 		return type;
 	}
+	public String getAttackType() {
+		return attack_type;
+	}
 
-	private int[][][][] template_ids;
+	private String[][][][] template_ids;
 }

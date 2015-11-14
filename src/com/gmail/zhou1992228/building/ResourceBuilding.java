@@ -25,18 +25,18 @@ public class ResourceBuilding extends BuildingEntity {
 	@Override
 	public void onCollect(Player p, int count) {
 		if (!p.getName().equals(getOwner())) {
-			p.sendMessage("Äã²»ÊÇ´Ë½¨ÖşµÄÖ÷ÈË£¡");
+			p.sendMessage("ä½ ä¸æ˜¯æ­¤å»ºç­‘çš„ä¸»äººï¼");
 			return;
 		}
 		if (output_count_ == 0) {
-			p.sendMessage("»¹Ã»¶«Î÷ÄØ£¬²»ÒªÕâÃ´¼±~");
+			p.sendMessage("è¿˜æ²¡ä¸œè¥¿å‘¢ï¼Œä¸è¦è¿™ä¹ˆæ€¥~");
 			return;
 		}
 		while (output_count_ > 0 && count > 0) {
 			--output_count_;
 			--count;
 			Util.giveItems(p, getTemplate().getOutput());
-			p.sendMessage("Äã´Ó " + getName() + " ´¦ »ñµÃ " + getTemplate().getRewardMessage());
+			p.sendMessage("ä½ ä» " + getName() + " å¤„ è·å¾— " + getTemplate().getRewardMessage());
 		}
 	}
 	@Override
@@ -46,41 +46,74 @@ public class ResourceBuilding extends BuildingEntity {
 			if (p.getName().equals(getOwner())) {
 				return;
 			}
-			Util.NotifyIfOnline(getOwner(), "ÄãµÄ " + getName() + " ÕıÔÚ±»Íæ¼Ò " + p.getName() + " ÆÆ»µ£¡");
 			if (health_ < 100) {
-				Util.NotifyIfOnline(getOwner(), "ÄãµÄ " + getName() + " ÕıÔÚ±»Íæ¼Ò " + p.getName() + " ÆÆ»µ£¡ÄÍ¾Ã¶È¼´½«ºÄ¾¡£¡");
+				Util.NotifyIfOnline(getOwner(), "ä½ çš„ " + getName() + " æ­£åœ¨è¢«ç©å®¶ " + p.getName() + " ç ´åï¼è€ä¹…åº¦å³å°†è€—å°½ï¼");
+			} else {
+				Util.NotifyIfOnline(getOwner(), "ä½ çš„ " + getName() + " æ­£åœ¨è¢«ç©å®¶ " + p.getName() + " ç ´åï¼");
 			}
 			health_ -= 5;
-			if (random.nextInt() < getTemplate().getRobPos()) {
+			if (random.nextInt(100) < getTemplate().getRobPos()) {
 				onRob(entity);
 			}
 		} else if (entity instanceof Monster) {
-			Util.NotifyIfOnline(getOwner(), "ÄãµÄ " + getName() + " ÕıÔÚ±»¹ÖÎïÆÆ»µ£¡");
 			if (health_ < 100) {
-				Util.NotifyIfOnline(getOwner(), "ÄãµÄ " + getName() + " ÕıÔÚ±»¹ÖÎïÆÆ»µ£¡ÄÍ¾Ã¶È¼´½«ºÄ¾¡£¡");
+				Util.NotifyIfOnline(getOwner(), "ä½ çš„ " + getName() + " æ­£åœ¨è¢«æ€ªç‰©ç ´åï¼è€ä¹…åº¦å³å°†è€—å°½ï¼");
+			} else {
+				Util.NotifyIfOnline(getOwner(), "ä½ çš„ " + getName() + " æ­£åœ¨è¢«æ€ªç‰©ç ´åï¼");
 			}
 			health_ -= 3;
-			if (random.nextInt() < getTemplate().getRobPos()) {
+			if (random.nextInt(100) < getTemplate().getRobPos()) {
 				onRob(entity);
 			}
 		}
 	}
+	@Override
+	public void onDamage(MilitaryBuilding attacker) {
+		if (random.nextInt(100) < attacker.getTemplate().getAttackRobPos()) {
+			if (output_count_ > 0) {
+				--output_count_;
+				attacker.addResource(getTemplate().getOutput());
+			}
+			if (health_ < 30) {
+				while (output_count_ > 0) {
+					--output_count_;
+					attacker.addResource(getTemplate().getOutput());
+				}
+			}
+		}
+		
+		if (health_ < 100) {
+			Util.NotifyIfOnline(getOwner(), "ä½ çš„ " + getName() + " æ­£åœ¨è¢«æ”»å‡»ï¼è€ä¹…åº¦å³å°†è€—å°½ï¼");
+		} else {
+			Util.NotifyIfOnline(getOwner(), "ä½ çš„ " + getName() + " æ­£åœ¨è¢«æ”»å‡»ï¼");
+		}
+		
+		health_ -= attacker.getAttack();
+	}
 
 	private void onRob(Entity e) {
 		if (output_count_ > 0) {
-			String robber = "¹ÖÎï";
+			String robber = "æ€ªç‰©";
 			if (e instanceof Player) {
 				Player p = (Player) e;
 				Util.giveItems(p, getTemplate().getOutput());
 				robber = p.getName();
-				p.sendMessage(String.format("Äã´Ó %s µÄ %s ÖĞ ÇÀ×ßÁË %s",
+				p.sendMessage(String.format("ä½ ä» %s çš„ %s ä¸­ æŠ¢èµ°äº† %s",
 						getOwner(), getName(), getTemplate().getRewardMessage()));
 			}
 			--output_count_;
 			Util.NotifyIfOnline(
-					getOwner(), String.format("ÄãµÄ %s ÖĞµÄÎïÆ·±» %s ÇÀ×ßÁËÒ»Ğ©",
+					getOwner(), String.format("ä½ çš„ %s ä¸­çš„ç‰©å“è¢« %s æŠ¢èµ°äº†ä¸€äº›",
 										  getName(),
 										  robber));
 		}
+	}
+
+	@Override
+	public void AddIfInRange(BuildingEntity entity) {}
+
+	@Override
+	public void TryAttack() {
+		return;
 	}
 }

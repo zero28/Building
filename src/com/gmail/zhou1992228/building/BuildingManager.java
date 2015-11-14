@@ -19,11 +19,15 @@ public class BuildingManager {
 	public void Init(Building plugin) {
 		buildings_ = new ArrayList<BuildingEntity>();
 		FileConfiguration config = Util.getConfigWithName("template.yml");
-		for (String building_name : config.getKeys(false)) {
+		for (String building_name : config.getConfigurationSection("buildings").getKeys(false)) {
 			BuildingTemplate.AddBuildingTemplate(
 				building_name,
-				config.getConfigurationSection(building_name));
-			Building.LOG("ÔØÈë½¨Öş:" + building_name);
+				config.getConfigurationSection("buildings." + building_name));
+			Building.LOG("è½½å…¥å»ºç­‘:" + building_name);
+		}
+		List<String> whitelist_id = config.getStringList("whitelist_id");
+		for (String s : whitelist_id) {
+			BuildingTemplate.whitelist_id.add(Integer.parseInt(s));
 		}
 		Load();
 	}
@@ -67,21 +71,21 @@ public class BuildingManager {
 			Location loc = template.Match(p.getLocation());
 			if (loc != null) {
 				if (CollideWithOtherBuilding(loc, template)) {
-					p.sendMessage("½¨ÖşÓëÒÑ´æÔÚµÄ½¨Öş³åÍ»£¡");
+					p.sendMessage("å»ºç­‘ä¸å·²å­˜åœ¨çš„å»ºç­‘å†²çªï¼");
 				} else {
 					if (Util.takeRequires(p, template.getOtherRequire())) {
-						p.sendMessage(building_name + " ½¨Éè³É¹¦£¡");
+						p.sendMessage(building_name + " å»ºè®¾æˆåŠŸï¼");
 						buildings_.add(BuildingEntity.createBuildingEntity(
 								p.getName(), loc, building_name, custom_name));
 					} else {
-						p.sendMessage("ÄãÃ»ÓĞ×ã¹»µÄÎïÆ·/½ğÇ®À´½¨ÉèÕâ¸ö½¨Öş");
+						p.sendMessage("ä½ æ²¡æœ‰è¶³å¤Ÿçš„ç‰©å“/é‡‘é’±æ¥å»ºè®¾è¿™ä¸ªå»ºç­‘");
 					}
 				}
 			} else {
-				p.sendMessage("ÔÙ¿´¿´Éè¼ÆÍ¼°É£¿");
+				p.sendMessage("å†çœ‹çœ‹è®¾è®¡å›¾å§ï¼Ÿ");
 			}
 		} else {
-			p.sendMessage("Ã»ÓĞÕâ¸ö½¨Öş");
+			p.sendMessage("æ²¡æœ‰è¿™ä¸ªå»ºç­‘");
 		}
 	}
 	public void ValidateBuildings() {
@@ -89,7 +93,7 @@ public class BuildingManager {
 		while (it.hasNext()) {
 			BuildingEntity b = it.next();
 			if (!b.Validate()) {
-				Util.NotifyIfOnline(b.getOwner(), "ÄãµÄ " + b.getName() + " ÒÑ±»ÆÆ»µ");
+				Util.NotifyIfOnline(b.getOwner(), "ä½ çš„ " + b.getName() + " å·²è¢«ç ´å");
 				it.remove();
 			}
 		}
@@ -103,6 +107,12 @@ public class BuildingManager {
 					building.onDamage(e);
 				}
 			}
+		}
+	}
+	
+	public void tryAttack() {
+		for (BuildingEntity e : buildings_) {
+			e.TryAttack();
 		}
 	}
 	

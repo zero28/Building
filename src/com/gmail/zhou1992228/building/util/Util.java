@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -69,7 +70,7 @@ public class Util {
 			Building.econ.depositPlayer(p.getName(), count);
 		} else if (par[0].equalsIgnoreCase("p")) {
 			if (par.length < 2) {
-				p.sendMessage("ÅäÖÃÎÄ¼þ´íÎó£¬ÇëÁªÏµ¹ÜÀíÔ±");
+				p.sendMessage("é…ç½®æ–‡ä»¶é”™è¯¯ï¼Œè¯·è”ç³»ç®¡ç†å‘˜");
 			}
 		} else if (par[0].equalsIgnoreCase("m")) {
 			ItemStack it = createFromString(item);
@@ -126,6 +127,16 @@ public class Util {
 		}
 	}
 	
+	public static boolean InsidePos(Location target, Location pos1, Location pos2) {
+		boolean x = (pos1.getBlockX() <= target.getBlockX() && target.getBlockX() <= pos2.getBlockX()) ||
+		        (pos2.getBlockX() <= target.getBlockX() && target.getBlockX() <= pos1.getBlockX());
+		boolean y = (pos1.getBlockY() <= target.getBlockY() && target.getBlockY() <= pos2.getBlockY()) ||
+		        (pos2.getBlockY() <= target.getBlockY() && target.getBlockY() <= pos1.getBlockY());
+		boolean z = (pos1.getBlockZ() <= target.getBlockZ() && target.getBlockZ() <= pos2.getBlockZ()) ||
+		        (pos2.getBlockZ() <= target.getBlockZ() && target.getBlockZ() <= pos1.getBlockZ());
+		return x && y && z;
+	}
+	
 	public static boolean takeRequires(Player p, String requires) {
 		if (haveRequires(p, requires)) {
 			takeItems(p, requires);
@@ -157,7 +168,7 @@ public class Util {
 			return true;
 		} else if (par[0].equalsIgnoreCase("p")) {
 			if (par.length < 2) {
-				p.sendMessage("ÅäÖÃÎÄ¼þ´íÎó£¬ÇëÁªÏµ¹ÜÀíÔ±");
+				p.sendMessage("é…ç½®æ–‡ä»¶é”™è¯¯ï¼Œè¯·è”ç³»ç®¡ç†å‘˜");
 				return false;
 			}
 			return p.hasPermission(par[1]);

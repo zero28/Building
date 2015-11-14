@@ -24,7 +24,7 @@ public abstract class BuildingEntity {
 			return new ResourceBuilding(owner, pos, building_name, name);
 		}
 		if (bt.getType().equalsIgnoreCase("Military")) {
-			return new ResourceBuilding(owner, pos, building_name, name);
+			return new MilitaryBuilding(owner, pos, building_name, name);
 		}
 		return null;
 	}
@@ -35,7 +35,7 @@ public abstract class BuildingEntity {
 			return new ResourceBuilding(config);
 		}
 		if (bt.getType().equalsIgnoreCase("Military")) {
-			return new ResourceBuilding(config);
+			return new MilitaryBuilding(config);
 		}
 		return null;
 	}
@@ -44,7 +44,7 @@ public abstract class BuildingEntity {
 		pos_ = pos;
 		owner_ = owner;
 		this.building_name = building_name;
-		name_ = owner + " µÄ " + building_name;
+		name_ = owner + " çš„ " + building_name;
 		template_ = BuildingTemplate.building_templates.get(building_name);
 		health_ = template_.getMaxHealth();
 	}
@@ -53,7 +53,7 @@ public abstract class BuildingEntity {
 		owner_ = owner;
 		this.building_name = building_name;
 		if (name.isEmpty()) {
-			name_ = owner + " µÄ " + building_name;
+			name_ = owner + " çš„ " + building_name;
 		} else {
 			name_ = name;
 		}
@@ -124,23 +124,26 @@ public abstract class BuildingEntity {
 	
 	public void addInput(Player p, int count) {
 		if (template_.getInput().isEmpty()) {
-			p.sendMessage("È»¶øÕâ²¢Ã»ÓĞÊ²Ã´~ÓÃ£¡");
+			p.sendMessage("ç„¶è€Œè¿™å¹¶æ²¡æœ‰ä»€ä¹ˆ~ç”¨ï¼");
 			return;
 		}
 		while (count > 0) {
 			--count;
 			if (!Util.haveRequires(p, template_.getInput())) {
-				p.sendMessage("ÄãÃ»ÓĞ×ã¹»µÄÎïÆ·£¡");
+				p.sendMessage("ä½ æ²¡æœ‰è¶³å¤Ÿçš„ç‰©å“ï¼");
 				break;
 			} else {
 				Util.takeItems(p, template_.getInput());
 				++input_count_;
 			}
 		}
-		p.sendMessage("ÒÑ·ÅÈë²ÄÁÏ");
+		p.sendMessage("å·²æ”¾å…¥ææ–™");
 	}
 
 	abstract public void onDamage(Entity entity);
+	abstract public void TryAttack();
+	abstract public void AddIfInRange(BuildingEntity entity);
+	abstract public void onDamage(MilitaryBuilding attacker);
 	
 	public boolean Collide(Location loc1, Location loc2) {
 		int Xa = Math.abs(loc1.getBlockX() - loc2.getBlockX());
@@ -192,6 +195,7 @@ public abstract class BuildingEntity {
 		}
 		pos_ = new_loc;
 		if (health_ <= 0) {
+			valid = false;
 			return false;
 		}
 		return true;
@@ -199,20 +203,25 @@ public abstract class BuildingEntity {
 	
 	public void putInput(Player p, int count) {
 		if (template_.getInput().isEmpty()) {
-			p.sendMessage("´Ë½¨Öş²»ĞèÒªÌí¼Ó²ÄÁÏ");
+			p.sendMessage("æ­¤å»ºç­‘ä¸éœ€è¦æ·»åŠ ææ–™");
 			return;
 		}
 		while (count > 0) {
 			if (Util.takeRequires(p, template_.getInput())) {
 				--count;
-				++input_count_;
+				input_count_ += template_.getOutputPerResource();
 			} else {
-				p.sendMessage("ÄãÃ»ÓĞ×ã¹»µÄ²ÄÁÏÁË");
+				p.sendMessage("ä½ æ²¡æœ‰è¶³å¤Ÿçš„ææ–™äº†");
 			}
 		}
-		p.sendMessage("²ÄÁÏÌí¼Ó³É¹¦");
+		p.sendMessage("ææ–™æ·»åŠ æˆåŠŸ");
+	}
+	
+	public boolean isValid() {
+		return valid;
 	}
 
+	protected boolean valid = true;
 	protected int input_count_;
 	protected int output_count_;
 	protected int health_;
@@ -223,4 +232,5 @@ public abstract class BuildingEntity {
 	private String owner_;
 	private String name_;
 	private BuildingTemplate template_;
+
 }
