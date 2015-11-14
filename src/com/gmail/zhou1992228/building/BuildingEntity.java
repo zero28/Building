@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -28,6 +29,9 @@ public abstract class BuildingEntity {
 		}
 		return null;
 	}
+	
+	abstract public String Info();
+	
 	public static BuildingEntity createBuildingEntity(ConfigurationSection config) {
 		BuildingTemplate bt = BuildingTemplate.building_templates.get(
 				config.getString("building_name"));
@@ -63,7 +67,11 @@ public abstract class BuildingEntity {
 	protected BuildingEntity(ConfigurationSection config) {
 		building_name = config.getString("building_name");
 		owner_ = config.getString("owner");
-		pos_ = new Location(Bukkit.getWorld(config.getString("world")),
+		World world = Bukkit.getWorld(config.getString("world"));
+		if (world == null) {
+			Building.LOG("world is null!!!!");
+		}
+		pos_ = new Location(world,
 							config.getInt("x"),
 							config.getInt("y"),
 							config.getInt("z"));
@@ -75,6 +83,7 @@ public abstract class BuildingEntity {
 		template_ = BuildingTemplate.building_templates.get(building_name);
 	}
 	public void Save(ConfigurationSection config) {
+	  try {
 		config.set("building_name", building_name);
 		config.set("owner", owner_);
 		config.set("world", pos_.getWorld().getName());
@@ -86,7 +95,7 @@ public abstract class BuildingEntity {
 		config.set("time_counter", time_counter_);
 		config.set("health", health_);
 		config.set("custom_name", name_);
-		Building.LOG("instance of " + name_);
+	  } catch (Exception e) {}
 	}
 	
 	public Location getPos() {
@@ -164,7 +173,12 @@ public abstract class BuildingEntity {
 	}
 	
 	public boolean inBuilding(Location loc) {
-		if (!loc.getWorld().getName().equals(pos_.getWorld().getName())) {
+		try {
+			if (!loc.getWorld().getName().equals(pos_.getWorld().getName())) {
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		int max_x = pos_.getBlockX()
@@ -189,6 +203,14 @@ public abstract class BuildingEntity {
 	}
 	
 	public boolean Validate() {
+		try {
+			if (!getPos().getChunk().isLoaded()) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return true;
+		}
 		Location new_loc = template_.Match(pos_);
 		if (new_loc == null) {
 			return false;
@@ -212,6 +234,7 @@ public abstract class BuildingEntity {
 				input_count_ += template_.getOutputPerResource();
 			} else {
 				p.sendMessage("你没有足够的材料了");
+				break;
 			}
 		}
 		p.sendMessage("材料添加成功");

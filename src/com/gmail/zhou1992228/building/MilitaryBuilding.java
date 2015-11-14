@@ -160,7 +160,13 @@ public class MilitaryBuilding extends BuildingEntity {
 		}
 		if (getTemplate().getAttackType().equals("entity")) {
 			int left_attack = getTemplate().getMax_target();
-			for (Entity e : getPos().getWorld().getEntities()) {
+			List<Entity> entities;
+			try {
+				entities = getPos().getWorld().getEntities();
+			} catch (Exception e) {
+				return;
+			}
+			for (Entity e : entities) {
 				if (left_attack <= 0 || input_count_ <= 0) {
 					break;
 				}
@@ -223,5 +229,11 @@ public class MilitaryBuilding extends BuildingEntity {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public String Info() {
+		// TODO Auto-generated method stub
+		return "";
 	}
 }

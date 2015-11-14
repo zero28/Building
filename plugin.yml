@@ -1,6 +1,8 @@
 name: Building
 main: com.gmail.zhou1992228.building.Building
 version: 1.0
+load: POSTWORLD
+depend: [Multiverse-Core]
 commands:
   build:
     description: test if a building ok
@@ -14,3 +16,6 @@ commands:
   testbuild:
     description:  build a building, op only
     usage: /<command> <building_name>
+  xx:
+    description: info of a building
+    usage: /<command>

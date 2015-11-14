@@ -116,4 +116,22 @@ public class ResourceBuilding extends BuildingEntity {
 	public void TryAttack() {
 		return;
 	}
+
+	@Override
+	public String Info() {
+		return String.format("建筑名称 : %s\n"
+				           + "生命值 : %d\n"
+				           + "产物 : %s\n"
+				           + "生产剩余时间 : %d 分钟\n"
+				           + "原材料数量 : %s\n"
+				           + "容量 : %d\n"
+				           + "剩余容量 : %d\n",
+				           getName(),
+				           health_,
+				           getTemplate().getRewardMessage(),
+				           getTemplate().getInterval() - time_counter_,
+				           input_count_,
+				           getTemplate().getStorage_cap(),
+				           getTemplate().getStorage_cap() - output_count_);
+	}
 }
