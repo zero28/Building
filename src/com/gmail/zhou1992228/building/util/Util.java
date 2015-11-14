@@ -48,7 +48,6 @@ public class Util {
     	try {
 			config.save(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -129,11 +128,11 @@ public class Util {
 	
 	public static boolean InsidePos(Location target, Location pos1, Location pos2) {
 		boolean x = (pos1.getBlockX() <= target.getBlockX() && target.getBlockX() <= pos2.getBlockX()) ||
-		        (pos2.getBlockX() <= target.getBlockX() && target.getBlockX() <= pos1.getBlockX());
+		            (pos2.getBlockX() <= target.getBlockX() && target.getBlockX() <= pos1.getBlockX());
 		boolean y = (pos1.getBlockY() <= target.getBlockY() && target.getBlockY() <= pos2.getBlockY()) ||
-		        (pos2.getBlockY() <= target.getBlockY() && target.getBlockY() <= pos1.getBlockY());
+		            (pos2.getBlockY() <= target.getBlockY() && target.getBlockY() <= pos1.getBlockY());
 		boolean z = (pos1.getBlockZ() <= target.getBlockZ() && target.getBlockZ() <= pos2.getBlockZ()) ||
-		        (pos2.getBlockZ() <= target.getBlockZ() && target.getBlockZ() <= pos1.getBlockZ());
+		            (pos2.getBlockZ() <= target.getBlockZ() && target.getBlockZ() <= pos1.getBlockZ());
 		return x && y && z;
 	}
 	

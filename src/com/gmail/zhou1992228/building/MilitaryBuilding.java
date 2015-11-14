@@ -1,6 +1,7 @@
 package com.gmail.zhou1992228.building;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -19,7 +20,6 @@ public class MilitaryBuilding extends BuildingEntity {
 	public MilitaryBuilding(ConfigurationSection config) {
 		super(config);
 		rewards = config.getStringList("reward_list");
-		attack = config.getInt("attack");
 	}
 
 	public MilitaryBuilding(String owner, Location pos, String type, String name) {
@@ -34,7 +34,6 @@ public class MilitaryBuilding extends BuildingEntity {
 	public void Save(ConfigurationSection config) {
 		super.Save(config);
 		config.set("reward_list", rewards);
-		config.set("attack", attack);
 	}
 	
 	@Override
@@ -120,7 +119,7 @@ public class MilitaryBuilding extends BuildingEntity {
 	}
 	
 	public int getAttack() {
-		return attack;
+		return getTemplate().getAttack();
 	}
 	
 	public void addResource(String s) {
@@ -129,13 +128,12 @@ public class MilitaryBuilding extends BuildingEntity {
 	
 	@Override
 	public void onUpdate() {
-		super.onUpdate();
+		// Do nothing.
 	}
 	
 	private List<BuildingEntity> building_in_range = new ArrayList<BuildingEntity>();
 	private List<String> rewards = new ArrayList<String>();
-	private int attack;
-
+	
 	@Override
 	public void AddIfInRange(BuildingEntity entity) {
 		Location loc = entity.getPos();
@@ -154,7 +152,76 @@ public class MilitaryBuilding extends BuildingEntity {
 
 	@Override
 	public void TryAttack() {
-		// TODO Auto-generated method stub
-		
+		++time_counter_;
+		if (time_counter_ > getTemplate().getInterval()) {
+			time_counter_ -= getTemplate().getInterval();
+		} else {
+			return;
+		}
+		if (getTemplate().getAttackType().equals("entity")) {
+			int left_attack = getTemplate().getMax_target();
+			for (Entity e : getPos().getWorld().getEntities()) {
+				if (left_attack <= 0 || input_count_ <= 0) {
+					break;
+				}
+				if (Attack(e)) {
+					--left_attack;
+					--input_count_;
+				}
+			}
+		} else if (getTemplate().getAttackType().equals("building")) {
+			int left_attack = getTemplate().getMax_target();
+			Iterator<BuildingEntity> it = building_in_range.iterator();
+			while (it.hasNext()) {
+				BuildingEntity building = it.next();
+				if (!building.valid) {
+					it.remove();
+				} else {
+					building.onDamage(this);
+					--left_attack;
+					--input_count_;
+				}
+				if (left_attack <= 0 || input_count_ <= 0) {
+					break;
+				}
+			}
+		} else {
+			Building.LOG("ERROR on template!");
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private boolean Attack(Entity e) {
+		Location l1 = 
+				getPos().clone().add(getTemplate().getAttack_x_range(),
+						 getTemplate().getAttack_y_range(),
+						 getTemplate().getAttack_z_range());
+
+		Location l2 = 
+				getPos().clone().add(-getTemplate().getAttack_x_range(),
+						 -getTemplate().getAttack_y_range(),
+						 -getTemplate().getAttack_z_range());
+		if (e instanceof Player) {
+			Player p = (Player) e;
+			if (p.getName().equals(getOwner())) {
+				return false;
+			}
+			if (Util.InsidePos(p.getLocation(), l1, l2)) {
+				p.damage(getAttack());
+				return true;
+			} else {
+				return false;
+			}
+		} else if (e instanceof Monster) {
+			Monster m = (Monster) e;
+			if (Util.InsidePos(e.getLocation(), l1, l2)) {
+				m.damage(getAttack());
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 }

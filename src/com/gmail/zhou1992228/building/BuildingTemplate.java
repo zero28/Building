@@ -39,6 +39,7 @@ public class BuildingTemplate {
 		attack_z_range = config.getInt("attack_z_range");
 		attack_rob_pos = config.getInt("attack_rob_pos");
 		max_target = config.getInt("max_target", 1);
+		attack = config.getInt("attack");
 		
 		List<String> template = config.getStringList("template");
 		List<String> typelist = config.getStringList("typelist");
@@ -76,7 +77,7 @@ public class BuildingTemplate {
 				template_ids[i + 4][x][y][z] = template_ids[i + 3][template_width - z - 1][y][x];
 			}
 		}
-		
+		/*
 		for (int i = 0; i < 8; ++i) {
 			for (int y = 0; y < template_height; ++y) {
 				String output = "\n";
@@ -89,6 +90,7 @@ public class BuildingTemplate {
 				Building.LOG(output);
 			}
 		}
+		*/
 	}
 	public int getX_size() {
 		return x_size;
@@ -248,4 +250,9 @@ public class BuildingTemplate {
 	}
 
 	private String[][][][] template_ids;
+	private int attack;
+	
+	public int getAttack() {
+		return attack;
+	}
 }
