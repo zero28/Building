@@ -19,7 +19,7 @@ public class CommandFriend implements CommandExecutor {
 				p.sendMessage(String.format("你 或 你的建筑 现在 不会攻击 %s 或 %s 的建筑",
 						arg3[0], arg3[0]));
 			} else {
-				p.sendMessage("请输入玩家ID");
+				p.sendMessage("好友列表：" + Friend.ins.getList(p.getName()));
 			}
 		}
 		return true;

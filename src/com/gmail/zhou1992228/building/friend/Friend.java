@@ -1,5 +1,6 @@
 package com.gmail.zhou1992228.building.friend;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,9 +24,12 @@ public class Friend {
 	}
 	public void Save() {
 		FileConfiguration config = Util.getConfigWithName("empty.yml");
+		if (relations.size() == 0) { return; }
 		for (String name : relations.keySet()) {
 			Set<String> friends = relations.get(name);
-			config.set(name, friends);
+			ArrayList<String> list = new ArrayList<String>();
+			list.addAll(friends);
+			config.set(name, list);
 		}
 		Util.SaveConfigToName(config, "friends.yml");
 	}
@@ -53,5 +57,14 @@ public class Friend {
 		if (friends == null) { return false; }
 		return friends.contains(to.toLowerCase());
 	}
-	private HashMap<String, HashSet<String>> relations;
+	private HashMap<String, HashSet<String>> relations = new HashMap<String, HashSet<String>>();
+	public String getList(String name) {
+		if (relations.get(name.toLowerCase()) == null) { return ""; }
+		StringBuffer s = new StringBuffer();
+		for (String ss : relations.get(name.toLowerCase())) {
+			s.append("\n");
+			s.append(ss);
+		}
+		return s.toString();
+	}
 }

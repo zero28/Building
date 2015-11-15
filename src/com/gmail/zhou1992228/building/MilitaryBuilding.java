@@ -211,7 +211,7 @@ public class MilitaryBuilding extends BuildingEntity {
 						 -getTemplate().getAttack_z_range());
 		if (e instanceof Player) {
 			Player p = (Player) e;
-			if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
+			if (p.getName().equals(getOwner()) || Friend.ins.isFriend(getOwner(), p.getName())) {
 				return false;
 			}
 			if (Util.InsidePos(p.getLocation(), l1, l2)) {
@@ -235,7 +235,18 @@ public class MilitaryBuilding extends BuildingEntity {
 
 	@Override
 	public String Info() {
-		// TODO Auto-generated method stub
-		return "";
+		return String.format(
+				 "建筑名称 : %s\n"
+	           + "占地面积 : %d * %d * %d\n"
+	           + "生命值 : %d\n"
+	           + "剩余攻击次数 : %d\n"
+	           + "攻击范围 : %d * %d * %d\n"
+	           + "",
+	           getName(),
+	           getTemplate().getX_size(),getTemplate().getY_size(),getTemplate().getZ_size(),
+	           health_,
+	           input_count_,
+	           getTemplate().getAttack_x_range(),getTemplate().getAttack_y_range(),getTemplate().getAttack_z_range()
+	           );
 	}
 }
