@@ -11,6 +11,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
+import com.gmail.zhou1992228.building.friend.Friend;
 import com.gmail.zhou1992228.building.util.Util;
 
 public class MilitaryBuilding extends BuildingEntity {
@@ -50,7 +51,7 @@ public class MilitaryBuilding extends BuildingEntity {
 	public void onDamage(Entity entity) {
 		if (entity instanceof Player) {
 			Player p = (Player) entity;
-			if (p.getName().equals(getOwner())) {
+			if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
 				return;
 			}
 			if (health_ < 100) {
@@ -182,7 +183,8 @@ public class MilitaryBuilding extends BuildingEntity {
 				BuildingEntity building = it.next();
 				if (!building.valid) {
 					it.remove();
-				} else {
+				} else if (getOwner().equals(building.getOwner())
+						|| Friend.ins.isFriend(getOwner(), building.getOwner())) {
 					building.onDamage(this);
 					--left_attack;
 					--input_count_;
@@ -209,7 +211,7 @@ public class MilitaryBuilding extends BuildingEntity {
 						 -getTemplate().getAttack_z_range());
 		if (e instanceof Player) {
 			Player p = (Player) e;
-			if (p.getName().equals(getOwner())) {
+			if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
 				return false;
 			}
 			if (Util.InsidePos(p.getLocation(), l1, l2)) {

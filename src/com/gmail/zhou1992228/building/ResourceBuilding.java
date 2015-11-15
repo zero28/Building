@@ -6,6 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
+import com.gmail.zhou1992228.building.friend.Friend;
 import com.gmail.zhou1992228.building.util.Util;
 
 public class ResourceBuilding extends BuildingEntity {
@@ -43,7 +44,7 @@ public class ResourceBuilding extends BuildingEntity {
 	public void onDamage(Entity entity) {
 		if (entity instanceof Player) {
 			Player p = (Player) entity;
-			if (p.getName().equals(getOwner())) {
+			if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
 				return;
 			}
 			if (health_ < 100) {

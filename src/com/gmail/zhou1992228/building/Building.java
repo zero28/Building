@@ -8,9 +8,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.zhou1992228.building.command.CommandAddBuilding;
 import com.gmail.zhou1992228.building.command.CommandCollect;
+import com.gmail.zhou1992228.building.command.CommandFriend;
 import com.gmail.zhou1992228.building.command.CommandInfo;
 import com.gmail.zhou1992228.building.command.CommandPut;
 import com.gmail.zhou1992228.building.command.CommandTestBuild;
+import com.gmail.zhou1992228.building.command.CommandUnFriend;
+import com.gmail.zhou1992228.building.friend.Friend;
 import com.gmail.zhou1992228.building.task.TaskBuildingAttack;
 import com.gmail.zhou1992228.building.task.TaskDamageBuildings;
 import com.gmail.zhou1992228.building.task.TaskUpdateBuilding;
@@ -45,16 +48,20 @@ public class Building extends JavaPlugin {
 		this.getCommand("put").setExecutor(new CommandPut());
 		this.getCommand("testbuild").setExecutor(new CommandTestBuild());
 		this.getCommand("xx").setExecutor(new CommandInfo());
+		this.getCommand("friend").setExecutor(new CommandFriend());
+		this.getCommand("unfriend").setExecutor(new CommandUnFriend());
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskUpdateBuilding(), 5 * 20, 5 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskValidateBuilding(), 10 * 20, 10 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskDamageBuildings(), 10 * 20, 10 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskBuildingAttack(), 1 * 20, 1 * 20);
 		BuildingManager.ins.Init(this);
+		Friend.ins.Init(this);
 	}
 	
 	@Override
 	public void onDisable() {
 		LOG("Saving");
 		BuildingManager.ins.Save();
+		Friend.ins.Save();
 	}
 }

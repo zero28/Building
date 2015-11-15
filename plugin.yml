@@ -19,3 +19,9 @@ commands:
   xx:
     description: info of a building
     usage: /<command>
+  friend:
+    description: add player as your friend
+    usage: /<command> <id>
+  unfriend:
+    description: remove player from your friend list
+    usage: /<command> <id>
