@@ -20,7 +20,8 @@ import com.gmail.zhou1992228.building.task.TaskUpdateBuilding;
 import com.gmail.zhou1992228.building.task.TaskValidateBuilding;
 
 public class Building extends JavaPlugin {
-
+	// TODO: Repair
+	// TODO: show input material
 	public static Economy econ = null;
 	public boolean setupEconomy() {
 		if (Building.ins.getServer().getPluginManager().getPlugin("Vault") == null) {

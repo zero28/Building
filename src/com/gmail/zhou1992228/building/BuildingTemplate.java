@@ -26,6 +26,7 @@ public class BuildingTemplate {
 		y_size = config.getInt("y_size");
 		z_size = config.getInt("z_size");
 		input = config.getString("input", "");
+		input_string = config.getString("input_message", "");
 		output_per_resource = config.getInt("output_per_resource");
 		output = config.getString("output", "");
 		storage_cap = config.getInt("storage");
@@ -214,6 +215,11 @@ public class BuildingTemplate {
 	private int attack_rob_pos;
 	private int output_per_resource;
 	private int max_target;
+	private String input_string;
+	public String getInput_string() {
+		return input_string;
+	}
+
 	private int attack_x_range, attack_y_range, attack_z_range;
 	public int getAttack_x_range() {
 		return attack_x_range;

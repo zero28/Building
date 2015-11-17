@@ -34,7 +34,7 @@ public class BuildingManager {
 	public void Load() {
 		FileConfiguration config = Util.getConfigWithName("buildings.yml");
 		for (String key : config.getKeys(false)) {
-			buildings_.add(BuildingEntity.createBuildingEntity(
+			AddBuilding(BuildingEntity.createBuildingEntity(
 					config.getConfigurationSection(key)));
 		}
 	}
@@ -75,7 +75,7 @@ public class BuildingManager {
 				} else {
 					if (Util.takeRequires(p, template.getOtherRequire())) {
 						p.sendMessage(building_name + " 建设成功！");
-						buildings_.add(BuildingEntity.createBuildingEntity(
+						AddBuilding(BuildingEntity.createBuildingEntity(
 								p.getName(), loc, building_name, custom_name));
 					} else {
 						p.sendMessage("你没有足够的物品/金钱来建设这个建筑");
@@ -88,6 +88,7 @@ public class BuildingManager {
 			p.sendMessage("没有这个建筑");
 		}
 	}
+	
 	public void ValidateBuildings() {
 		Iterator<BuildingEntity> it = buildings_.iterator();
 		while (it.hasNext()) {
@@ -138,6 +139,14 @@ public class BuildingManager {
 			}
 		}
 		return false;
+	}
+	
+	private void AddBuilding(BuildingEntity e) {
+		for (BuildingEntity ori : buildings_) {
+			ori.AddIfInRange(e);
+			e.AddIfInRange(ori);
+		}
+		buildings_.add(e);
 	}
 	
 	private List<BuildingEntity> buildings_;

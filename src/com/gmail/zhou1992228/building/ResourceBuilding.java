@@ -33,12 +33,14 @@ public class ResourceBuilding extends BuildingEntity {
 			p.sendMessage("还没东西呢，不要这么急~");
 			return;
 		}
+		int collect_count = 0;
 		while (output_count_ > 0 && count > 0) {
 			--output_count_;
 			--count;
+			++collect_count;
 			Util.giveItems(p, getTemplate().getOutput());
-			p.sendMessage("你从 " + getName() + " 处 获得 " + getTemplate().getRewardMessage());
 		}
+		p.sendMessage("你从 " + getName() + " 处 获得 " + getTemplate().getRewardMessage() + " * " + collect_count);
 	}
 	@Override
 	public void onDamage(Entity entity) {
@@ -73,20 +75,20 @@ public class ResourceBuilding extends BuildingEntity {
 		if (random.nextInt(100) < attacker.getTemplate().getAttackRobPos()) {
 			if (output_count_ > 0) {
 				--output_count_;
-				attacker.addResource(getTemplate().getOutput());
+				attacker.addResource(getTemplate().getOutput(), getTemplate().getRewardMessage());
 			}
 			if (health_ < 30) {
 				while (output_count_ > 0) {
 					--output_count_;
-					attacker.addResource(getTemplate().getOutput());
+					attacker.addResource(getTemplate().getOutput(), getTemplate().getRewardMessage());
 				}
 			}
 		}
 		
 		if (health_ < 100) {
-			Util.NotifyIfOnline(getOwner(), "你的 " + getName() + " 正在被攻击！耐久度即将耗尽！");
+			Util.NotifyIfOnline(getOwner(), "你的 " + getName() + " 正在被 " + attacker.getOwner() + " 的建筑攻击！耐久度即将耗尽！");
 		} else {
-			Util.NotifyIfOnline(getOwner(), "你的 " + getName() + " 正在被攻击！");
+			Util.NotifyIfOnline(getOwner(), "你的 " + getName() + " 正在被 " + attacker.getOwner() + " 的建筑攻击！");
 		}
 		
 		health_ -= attacker.getAttack();
@@ -126,6 +128,7 @@ public class ResourceBuilding extends BuildingEntity {
 				           + "产物 : %s\n"
 				           + "生产剩余时间 : %d 分钟\n"
 				           + "原材料数量 : %s\n"
+				           + "所需原材料 : %s\n"
 				           + "容量 : %d\n"
 				           + "剩余容量 : %d\n",
 				           getName(),
@@ -133,7 +136,8 @@ public class ResourceBuilding extends BuildingEntity {
 				           health_,
 				           getTemplate().getRewardMessage(),
 				           getTemplate().getInterval() - time_counter_,
-				           input_count_,
+				           getTemplate().getInput().isEmpty() ? "不需要原材料" : input_count_ + "",
+				           getTemplate().getInput_string().isEmpty() ? "不需要原材料" : getTemplate().getInput_string(), 
 				           getTemplate().getStorage_cap(),
 				           getTemplate().getStorage_cap() - output_count_);
 	}

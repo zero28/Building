@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.util.com.google.common.base.Joiner;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -21,6 +23,7 @@ public class MilitaryBuilding extends BuildingEntity {
 	public MilitaryBuilding(ConfigurationSection config) {
 		super(config);
 		rewards = config.getStringList("reward_list");
+		rewards_message = config.getStringList("reward_messages");
 	}
 
 	public MilitaryBuilding(String owner, Location pos, String type, String name) {
@@ -35,6 +38,7 @@ public class MilitaryBuilding extends BuildingEntity {
 	public void Save(ConfigurationSection config) {
 		super.Save(config);
 		config.set("reward_list", rewards);
+		config.set("reward_messages", rewards_message);
 	}
 	
 	@Override
@@ -44,7 +48,9 @@ public class MilitaryBuilding extends BuildingEntity {
 			return;
 		}
 		Util.giveItems(p, rewards.get(0));
+		p.sendMessage("你获得了战利品 " + rewards_message.get(0));
 		rewards.remove(0);
+		rewards_message.remove(0);
 	}
 	
 	@Override
@@ -100,12 +106,12 @@ public class MilitaryBuilding extends BuildingEntity {
 		if (random.nextInt(100) < attacker.getTemplate().getAttackRobPos()) {
 			if (input_count_ > getTemplate().getOutputPerResource()) {
 				if (!getTemplate().getInput().isEmpty()) {
-					attacker.addResource(getTemplate().getInput());
+					attacker.addResource(getTemplate().getInput(), getTemplate().getInput_string());
 					input_count_ -= getTemplate().getOutputPerResource();
 					if (health_ < 50) {
 						while (input_count_ > getTemplate().getOutputPerResource()) {
 							input_count_ -= getTemplate().getOutputPerResource();
-							attacker.addResource(getTemplate().getInput());
+							attacker.addResource(getTemplate().getInput(), getTemplate().getInput_string());
 						}
 					}
 				}
@@ -123,8 +129,9 @@ public class MilitaryBuilding extends BuildingEntity {
 		return getTemplate().getAttack();
 	}
 	
-	public void addResource(String s) {
+	public void addResource(String s, String reward) {
 		rewards.add(s);
+		rewards_message.add(reward);
 	}
 	
 	@Override
@@ -134,19 +141,21 @@ public class MilitaryBuilding extends BuildingEntity {
 	
 	private List<BuildingEntity> building_in_range = new ArrayList<BuildingEntity>();
 	private List<String> rewards = new ArrayList<String>();
+	private List<String> rewards_message = new ArrayList<String>();
 	
 	@Override
 	public void AddIfInRange(BuildingEntity entity) {
 		Location loc = entity.getPos();
-		Location p1 = getPos().add(
-				   getTemplate().getAttack_x_range(),
-				   getTemplate().getAttack_y_range(),
-				   getTemplate().getAttack_z_range());
-		Location p2 = getPos().add(
-				   -getTemplate().getAttack_x_range(),
-				   -getTemplate().getAttack_y_range(),
-				   -getTemplate().getAttack_z_range());
-		if (Util.InsidePos(loc, p1, p2)) {
+		Location l1 = 
+				getPos().clone().add(getTemplate().getAttack_x_range(),
+						 getTemplate().getAttack_y_range(),
+						 getTemplate().getAttack_z_range());
+
+		Location l2 = 
+				getPos().clone().add(-getTemplate().getAttack_x_range(),
+						 -getTemplate().getAttack_y_range(),
+						 -getTemplate().getAttack_z_range());
+		if (Util.InsidePos(loc, l1, l2)) {
 			building_in_range.add(entity);
 		}
 	}
@@ -180,17 +189,18 @@ public class MilitaryBuilding extends BuildingEntity {
 			int left_attack = getTemplate().getMax_target();
 			Iterator<BuildingEntity> it = building_in_range.iterator();
 			while (it.hasNext()) {
+				if (left_attack <= 0 || input_count_ <= 0) {
+					break;
+				}
 				BuildingEntity building = it.next();
+				Building.LOG(getName() + " trying to attack " + building.getName()); 
 				if (!building.valid) {
 					it.remove();
-				} else if (getOwner().equals(building.getOwner())
-						|| Friend.ins.isFriend(getOwner(), building.getOwner())) {
+				} else if (!getOwner().equals(building.getOwner())
+						&& !Friend.ins.isFriend(getOwner(), building.getOwner())) {
 					building.onDamage(this);
 					--left_attack;
 					--input_count_;
-				}
-				if (left_attack <= 0 || input_count_ <= 0) {
-					break;
 				}
 			}
 		} else {
@@ -239,14 +249,17 @@ public class MilitaryBuilding extends BuildingEntity {
 				 "建筑名称 : %s\n"
 	           + "占地面积 : %d * %d * %d\n"
 	           + "生命值 : %d\n"
+	           + "原材料 : %s\n"
 	           + "剩余攻击次数 : %d\n"
 	           + "攻击范围 : %d * %d * %d\n"
-	           + "",
+	           + "战利品 : %s\n",
 	           getName(),
 	           getTemplate().getX_size(),getTemplate().getY_size(),getTemplate().getZ_size(),
 	           health_,
+	           getTemplate().getInput_string().isEmpty() ? "不需要原材料" : getTemplate().getInput_string(),
 	           input_count_,
-	           getTemplate().getAttack_x_range(),getTemplate().getAttack_y_range(),getTemplate().getAttack_z_range()
+	           getTemplate().getAttack_x_range(),getTemplate().getAttack_y_range(),getTemplate().getAttack_z_range(),
+	           Joiner.on(", ").join(rewards_message)
 	           );
 	}
 }
