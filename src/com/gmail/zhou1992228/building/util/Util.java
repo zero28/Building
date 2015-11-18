@@ -8,15 +8,31 @@ import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.Vector;
 
 import com.gmail.zhou1992228.building.Building;
 
 public class Util {
+	
+	public static Block getBlockLookingAt(Player p, int range) {
+		double dis = 0.2;
+		Location loc = p.getLocation();
+		Vector add = loc.getDirection();
+		for (int i = 0; i < 100; ++i) {
+			loc.add(add);
+			if (loc.getBlock().getType().isSolid()) {
+				return loc.getBlock();
+			}
+		}
+		return null;
+	}
+	
     public static FileConfiguration getConfigWithName(String name) {
 		File file = new File(Building.ins.getDataFolder(), name);
 		if (file == null || !file.exists()) {

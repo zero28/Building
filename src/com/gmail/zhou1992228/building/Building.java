@@ -11,6 +11,7 @@ import com.gmail.zhou1992228.building.command.CommandCollect;
 import com.gmail.zhou1992228.building.command.CommandFriend;
 import com.gmail.zhou1992228.building.command.CommandInfo;
 import com.gmail.zhou1992228.building.command.CommandPut;
+import com.gmail.zhou1992228.building.command.CommandTemplate;
 import com.gmail.zhou1992228.building.command.CommandTestBuild;
 import com.gmail.zhou1992228.building.command.CommandUnFriend;
 import com.gmail.zhou1992228.building.friend.Friend;
@@ -51,6 +52,7 @@ public class Building extends JavaPlugin {
 		this.getCommand("xx").setExecutor(new CommandInfo());
 		this.getCommand("friend").setExecutor(new CommandFriend());
 		this.getCommand("unfriend").setExecutor(new CommandUnFriend());
+		this.getCommand("template").setExecutor(new CommandTemplate());
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskUpdateBuilding(), 5 * 20, 5 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskValidateBuilding(), 10 * 20, 10 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskDamageBuildings(), 10 * 20, 10 * 20);

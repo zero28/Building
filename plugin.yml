@@ -25,3 +25,6 @@ commands:
   unfriend:
     description: remove player from your friend list
     usage: /<command> <id>
+  template:
+    description: test
+    usage: /<command>
