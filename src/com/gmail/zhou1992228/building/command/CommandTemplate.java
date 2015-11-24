@@ -13,7 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import com.gmail.zhou1992228.building.Building;
+import com.gmail.zhou1992228.building.BuildingTemplate;
 import com.gmail.zhou1992228.building.util.Util;
 
 public class CommandTemplate implements CommandExecutor {
@@ -52,6 +52,10 @@ public class CommandTemplate implements CommandExecutor {
 				SetTemplate(arg3[0], p);
 				return true;
 			}
+			if (arg3[1].equals("test")) {
+				TestMatch(arg3[0], p, arg3[2]);
+				return true;
+			}
 			if (arg3.length < 3) {
 				p.sendMessage("请输入正确的指令");
 				return true;
@@ -59,6 +63,19 @@ public class CommandTemplate implements CommandExecutor {
 			SetTemplate(arg3[0], arg3[1], arg3[2]);
 		}
 		return true;
+	}
+	
+	private void TestMatch(String building_name, Player p, String type) {
+		Location l = pos1.get(p.getName());
+		if (l == null) {
+			p.sendMessage("请先选择一个点");
+			return;
+		}
+		try {
+			BuildingTemplate.building_templates.get(building_name).TestMatchType(Integer.parseInt(type), l);
+		} catch (Exception e) {
+			p.sendMessage("出错!");
+		}
 	}
 	
 	private void SetTemplate(String building_name, String key, String value) {
@@ -79,8 +96,13 @@ public class CommandTemplate implements CommandExecutor {
 			p.sendMessage("两点不在同一个世界");
 			return;
 		}
-		SetTemplate(config.createSection("buildings." + building_name),
+		if (config.isSet("buildings." + building_name)) {
+			SetTemplate(config.getConfigurationSection("buildings." + building_name),
 				pos1.get(p.getName()), pos2.get(p.getName()));
+		} else {
+			SetTemplate(config.createSection("buildings." + building_name),
+				pos1.get(p.getName()), pos2.get(p.getName()));
+		}
 		Util.SaveConfigToName(config, "template.yml");
 	}
 	static private String validChar = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";

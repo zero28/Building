@@ -137,7 +137,7 @@ public class ResourceBuilding extends BuildingEntity {
 				           getTemplate().getRewardMessage(),
 				           getTemplate().getInterval() - time_counter_,
 				           getTemplate().getInput().isEmpty() ? "不需要原材料" : input_count_ + "",
-				           getTemplate().getInput_string().isEmpty() ? "不需要原材料" : getTemplate().getInput_string(), 
+				           getTemplate().getInput().isEmpty() ? "不需要原材料" : getTemplate().getInput_string(), 
 				           getTemplate().getStorage_cap(),
 				           getTemplate().getStorage_cap() - output_count_);
 	}

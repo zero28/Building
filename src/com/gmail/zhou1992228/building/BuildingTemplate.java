@@ -14,6 +14,14 @@ public class BuildingTemplate {
 	public static HashMap<String, BuildingTemplate> building_templates =
 			new HashMap<String, BuildingTemplate>();
 	public static HashSet<Integer> whitelist_id = new HashSet<Integer>();
+	public static String buildingList() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("建筑列表:\n");
+		for (BuildingTemplate bt : building_templates.values()) {
+			sb.append(bt.getName() + "\n");
+		}
+		return sb.toString();
+	}
 	public static void AddBuildingTemplate(String name, ConfigurationSection config) {
 		building_templates.put(name, new BuildingTemplate(config));
 	}
@@ -152,10 +160,18 @@ public class BuildingTemplate {
 		return null;
 	}
 	
+	public boolean TestMatchType(int type, Location l) {
+		return MatchType(type, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld());
+	}
+	
 	private boolean MatchType(int type, int ox, int oy, int oz, World world) {
 		for (int i = 0; i < template_width; ++i)
 		for (int j = 0; j < template_height; ++j)
 		for (int k = 0; k < template_width; ++k) {
+			/*
+			Building.LOG("template_id: " + template_ids[type][i][j][k]
+					+ "\nBlock:" + world.getBlockAt(ox + i, oy + j, oz + k).toString());
+			 */
 			if (!template_ids[type][i][j][k].equals("0") &&
 				!Match(world.getBlockAt(ox + i, oy + j, oz + k),
 					   template_ids[type][i][j][k])) {

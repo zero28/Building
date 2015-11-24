@@ -20,10 +20,14 @@ public class BuildingManager {
 		buildings_ = new ArrayList<BuildingEntity>();
 		FileConfiguration config = Util.getConfigWithName("template.yml");
 		for (String building_name : config.getConfigurationSection("buildings").getKeys(false)) {
-			BuildingTemplate.AddBuildingTemplate(
-				building_name,
-				config.getConfigurationSection("buildings." + building_name));
-			Building.LOG("载入建筑:" + building_name);
+			try {
+				BuildingTemplate.AddBuildingTemplate(
+						building_name,
+						config.getConfigurationSection("buildings." + building_name));
+				Building.LOG("载入建筑:" + building_name);
+			} catch (Exception e) {
+				Building.LOG("ERROR: 载入建筑:" + building_name + " 时错误");
+			}
 		}
 		List<String> whitelist_id = config.getStringList("whitelist_id");
 		for (String s : whitelist_id) {
