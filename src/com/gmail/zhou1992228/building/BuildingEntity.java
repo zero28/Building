@@ -68,9 +68,6 @@ public abstract class BuildingEntity {
 		building_name = config.getString("building_name");
 		owner_ = config.getString("owner");
 		World world = Bukkit.getWorld(config.getString("world"));
-		if (world == null) {
-			Building.LOG("world is null!!!!");
-		}
 		pos_ = new Location(world,
 							config.getInt("x"),
 							config.getInt("y"),

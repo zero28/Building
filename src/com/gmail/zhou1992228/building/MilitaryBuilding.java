@@ -193,7 +193,6 @@ public class MilitaryBuilding extends BuildingEntity {
 					break;
 				}
 				BuildingEntity building = it.next();
-				Building.LOG(getName() + " trying to attack " + building.getName()); 
 				if (!building.valid) {
 					it.remove();
 				} else if (!getOwner().equals(building.getOwner())

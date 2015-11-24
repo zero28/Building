@@ -35,13 +35,13 @@ public class CommandTemplate implements CommandExecutor {
 				Block l = Util.getBlockLookingAt(p, 1000);
 				if (l == null) { p.sendMessage("眼前没有方块"); return true; }
 				pos1.put(p.getName(), l.getLocation());
-				Building.LOG(l.toString());
+				arg0.sendMessage(l.toString());
 				return true;
 			} else if (arg3[0].equalsIgnoreCase("select2")) {
 				Block l = Util.getBlockLookingAt(p, 1000);
 				if (l == null) { p.sendMessage("眼前没有方块"); return true; }
 				pos2.put(p.getName(), l.getLocation());
-				Building.LOG(l.toString());
+				arg0.sendMessage(l.toString());
 				return true;
 			}
 			if (arg3.length < 2) {
@@ -109,12 +109,6 @@ public class CommandTemplate implements CommandExecutor {
 		String empty_z_front = "", empty_z_end = "";
 		for (int i = 0; i < empty_z_up; ++i) empty_z_front += " ";
 		for (int i = 0; i < empty_z_down; ++i) empty_z_end += " ";
-		Building.LOG(String.format("min_x: %d min_y: %d min_z: %d\n"
-								 + "max_x: %d max_y: %d max_z: %d\n"
-		                         + "exu: %d exd: %d ezu: %d ezd: %d",
-		                         min_x, min_y, min_z,
-		                         max_x, max_y, max_z,
-		                         empty_x_up, empty_x_down, empty_z_up, empty_z_down));
 		for (int y = min_y; y <= max_y; ++y) {
 			for (int i = 0; i < empty_x_up; ++i) {
 				template.add(empty_x);

@@ -15,6 +15,7 @@ import com.gmail.zhou1992228.building.command.CommandTemplate;
 import com.gmail.zhou1992228.building.command.CommandTestBuild;
 import com.gmail.zhou1992228.building.command.CommandUnFriend;
 import com.gmail.zhou1992228.building.friend.Friend;
+import com.gmail.zhou1992228.building.task.TaskAutoSave;
 import com.gmail.zhou1992228.building.task.TaskBuildingAttack;
 import com.gmail.zhou1992228.building.task.TaskDamageBuildings;
 import com.gmail.zhou1992228.building.task.TaskUpdateBuilding;
@@ -57,6 +58,7 @@ public class Building extends JavaPlugin {
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskValidateBuilding(), 10 * 20, 10 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskDamageBuildings(), 10 * 20, 10 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskBuildingAttack(), 1 * 20, 1 * 20);
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskAutoSave(), 60 * 60 * 20, 60 * 60 * 20);
 		BuildingManager.ins.Init(this);
 		Friend.ins.Init(this);
 	}
