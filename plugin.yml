@@ -28,3 +28,6 @@ commands:
   template:
     description: test
     usage: /<command>
+  buildlist:
+    description: test
+    usage: /<command>

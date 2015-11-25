@@ -134,7 +134,7 @@ public class BuildingTemplate {
 		int oriz = (int) (loc.getZ() - template_width / 2);
 		
 		for (int type = 0; type < 8; ++type) {
-			if (MatchType(type, orix, oriy, oriz, loc.getWorld())) {
+			if (MatchType(type, orix, oriy, oriz, loc.getWorld(), false)) {
 				return new Location(loc.getWorld(),
 									orix + template_width / 2,
 									oriy + template_height / 2,
@@ -149,7 +149,7 @@ public class BuildingTemplate {
 			int match_y = oriy + dy;
 			int match_z = oriz + dz;
 			for (int type = 0; type < 8; ++type) {
-				if (MatchType(type, match_x, match_y, match_z, loc.getWorld())) {
+				if (MatchType(type, match_x, match_y, match_z, loc.getWorld(), false)) {
 					return new Location(loc.getWorld(),
 										match_x + template_width / 2,
 										match_y + template_height / 2,
@@ -161,17 +161,17 @@ public class BuildingTemplate {
 	}
 	
 	public boolean TestMatchType(int type, Location l) {
-		return MatchType(type, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld());
+		return MatchType(type, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld(), true);
 	}
 	
-	private boolean MatchType(int type, int ox, int oy, int oz, World world) {
+	private boolean MatchType(int type, int ox, int oy, int oz, World world, boolean debug) {
 		for (int i = 0; i < template_width; ++i)
 		for (int j = 0; j < template_height; ++j)
 		for (int k = 0; k < template_width; ++k) {
-			/*
-			Building.LOG("template_id: " + template_ids[type][i][j][k]
+			if (debug) {
+				Building.LOG("template_id: " + template_ids[type][i][j][k]
 					+ "\nBlock:" + world.getBlockAt(ox + i, oy + j, oz + k).toString());
-			 */
+			}
 			if (!template_ids[type][i][j][k].equals("0") &&
 				!Match(world.getBlockAt(ox + i, oy + j, oz + k),
 					   template_ids[type][i][j][k])) {

@@ -1,6 +1,7 @@
 package com.gmail.zhou1992228.building;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,6 +57,12 @@ public class BuildingManager {
 		for (BuildingEntity building : buildings_) {
 			building.onUpdate();
 		}
+	}
+	public void Backup() {
+		FileConfiguration config = Util.getConfigWithName("buildings.yml");
+		Util.SaveConfigToName(config,
+				"backup",
+				"buildings-" + Calendar.getInstance().getTimeInMillis() + ".yml.backup");
 	}
 	public void Save() {
 		FileConfiguration config = Util.getConfigWithName("empty.yml");

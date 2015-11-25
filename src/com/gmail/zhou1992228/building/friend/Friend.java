@@ -1,6 +1,7 @@
 package com.gmail.zhou1992228.building.friend;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,12 @@ public class Friend {
 			set.addAll(list);
 			relations.put(from, set);
 		}
+	}
+	public void Backup() {
+		FileConfiguration config = Util.getConfigWithName("friends.yml");
+		Util.SaveConfigToName(config,
+				"backup",
+				"friends-" + Calendar.getInstance().getTimeInMillis() + ".yml.backup");
 	}
 	public void Save() {
 		FileConfiguration config = Util.getConfigWithName("empty.yml");

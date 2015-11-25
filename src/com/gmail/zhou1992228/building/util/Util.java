@@ -52,8 +52,8 @@ public class Util {
     	}
     }
     
-    public static void SaveConfigToName(FileConfiguration config, String fileName) {
-    	File file = new File(Building.ins.getDataFolder(), fileName);
+    public static void SaveConfigToName(FileConfiguration config, String sub_dir, String fileName) {
+    	File file = new File(Building.ins.getDataFolder() + File.separator + sub_dir, fileName);
     	if (file == null || !file.exists()) {
             try {
                 file.createNewFile();
@@ -66,6 +66,10 @@ public class Util {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+    }
+    
+    public static void SaveConfigToName(FileConfiguration config, String fileName) {
+    	SaveConfigToName(config, "", fileName);
     }
    
 	public static void giveItems(Player p, String items) {

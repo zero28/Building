@@ -9,7 +9,9 @@ public class TaskAutoSave implements Runnable {
 	@Override
 	public void run() {
 		Building.LOG("Building Auto Saving");
+		BuildingManager.ins.Backup();
 		BuildingManager.ins.Save();
+		Friend.ins.Backup();
 		Friend.ins.Save();
 	}
 }
