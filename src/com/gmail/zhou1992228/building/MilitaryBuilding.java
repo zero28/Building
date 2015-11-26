@@ -246,11 +246,11 @@ public class MilitaryBuilding extends BuildingEntity {
 	public String Info() {
 		return String.format(
 				 "建筑名称 : %s\n"
-	           + "占地面积 : %d * %d * %d\n"
+	           + "占地面积(直径) : %d * %d * %d\n"
 	           + "生命值 : %d\n"
 	           + "原材料 : %s\n"
 	           + "剩余攻击次数 : %d\n"
-	           + "攻击范围 : %d * %d * %d\n"
+	           + "攻击范围(半径) : %d * %d * %d\n"
 	           + "战利品 : %s\n",
 	           getName(),
 	           getTemplate().getX_size(),getTemplate().getY_size(),getTemplate().getZ_size(),

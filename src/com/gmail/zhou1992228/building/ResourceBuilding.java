@@ -123,7 +123,7 @@ public class ResourceBuilding extends BuildingEntity {
 	@Override
 	public String Info() {
 		return String.format("建筑名称 : %s\n"
-				           + "占地面积 : %d * %d * %d\n"
+				           + "占地面积(直径) : %d * %d * %d\n"
 				           + "生命值 : %d\n"
 				           + "产物 : %s\n"
 				           + "生产剩余时间 : %d 分钟\n"
