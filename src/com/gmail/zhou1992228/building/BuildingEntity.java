@@ -127,7 +127,7 @@ public abstract class BuildingEntity {
 	
 	abstract public void onCollect(Player p, int count);
 
-	
+	/*
 	public void addInput(Player p, int count) {
 		if (template_.getInput().isEmpty()) {
 			p.sendMessage("然而这并没有什么~用！");
@@ -145,6 +145,7 @@ public abstract class BuildingEntity {
 		}
 		p.sendMessage("已放入材料");
 	}
+	*/
 
 	abstract public void onDamage(Entity entity);
 	abstract public void TryAttack();
@@ -225,16 +226,21 @@ public abstract class BuildingEntity {
 			p.sendMessage("此建筑不需要添加材料");
 			return;
 		}
+		int ccc = 0;
 		while (count > 0) {
-			if (Util.takeRequires(p, template_.getInput())) {
-				--count;
-				input_count_ += template_.getOutputPerResource();
-			} else {
-				p.sendMessage("你没有足够的材料了");
-				break;
+			for (String input : template_.getInput()) {
+				if (Util.takeRequires(p, input)) {
+					--count;
+					input_count_ += template_.getOutputPerResource();
+					++ccc;
+				}
 			}
 		}
-		p.sendMessage("材料添加成功");
+		if (ccc != 0) {
+			p.sendMessage("材料添加成功");
+		} else {
+			p.sendMessage("你没有足够的材料");
+		}
 	}
 	
 	public boolean isValid() {

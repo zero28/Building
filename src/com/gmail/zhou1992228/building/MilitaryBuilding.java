@@ -87,7 +87,7 @@ public class MilitaryBuilding extends BuildingEntity {
 			String robber = "怪物";
 			if (e instanceof Player) {
 				Player p = (Player) e;
-				Util.giveItems(p, getTemplate().getInput());
+				Util.giveItems(p, getTemplate().getInput().get(0));
 				robber = p.getName();
 				p.sendMessage(String.format("你从 %s 的 %s 中 抢走了 %s",
 						getOwner(), getName(), getTemplate().getRewardMessage()));
@@ -106,12 +106,12 @@ public class MilitaryBuilding extends BuildingEntity {
 		if (random.nextInt(100) < attacker.getTemplate().getAttackRobPos()) {
 			if (input_count_ > getTemplate().getOutputPerResource()) {
 				if (!getTemplate().getInput().isEmpty()) {
-					attacker.addResource(getTemplate().getInput(), getTemplate().getInput_string());
+					attacker.addResource(getTemplate().getInput().get(0), getTemplate().getInput_string().get(0));
 					input_count_ -= getTemplate().getOutputPerResource();
 					if (health_ < 50) {
 						while (input_count_ > getTemplate().getOutputPerResource()) {
 							input_count_ -= getTemplate().getOutputPerResource();
-							attacker.addResource(getTemplate().getInput(), getTemplate().getInput_string());
+							attacker.addResource(getTemplate().getInput().get(0), getTemplate().getInput_string().get(0));
 						}
 					}
 				}

@@ -1,5 +1,7 @@
 package com.gmail.zhou1992228.building;
 
+import net.minecraft.util.com.google.common.base.Joiner;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -136,8 +138,9 @@ public class ResourceBuilding extends BuildingEntity {
 				           health_,
 				           getTemplate().getRewardMessage(),
 				           getTemplate().getInterval() - time_counter_,
-				           getTemplate().getInput().isEmpty() ? "不需要原材料" : input_count_ + "",
-				           getTemplate().getInput().isEmpty() ? "不需要原材料" : getTemplate().getInput_string(), 
+				           getTemplate().getInput() == null ? "不需要原材料" : input_count_ + "",
+				           getTemplate().getInput() == null ? "不需要原材料" :
+				        	   Joiner.on(" 或 ").join(getTemplate().getInput_string()), 
 				           getTemplate().getStorage_cap(),
 				           getTemplate().getStorage_cap() - output_count_);
 	}

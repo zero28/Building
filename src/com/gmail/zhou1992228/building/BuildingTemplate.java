@@ -33,8 +33,8 @@ public class BuildingTemplate {
 		x_size = config.getInt("x_size");
 		y_size = config.getInt("y_size");
 		z_size = config.getInt("z_size");
-		input = config.getString("input", "");
-		input_string = config.getString("input_message", "");
+		input = config.getStringList("input");
+		input_string = config.getStringList("input_message");
 		output_per_resource = config.getInt("output_per_resource");
 		output = config.getString("output", "");
 		storage_cap = config.getInt("storage");
@@ -113,7 +113,7 @@ public class BuildingTemplate {
 	public int getInterval() {
 		return interval;
 	}
-	public String getInput() {
+	public List<String> getInput() {
 		return input;
 	}
 	public String getRewardMessage() {
@@ -221,7 +221,7 @@ public class BuildingTemplate {
 	private int template_height;
 	private int interval;
 	private String output;
-	private String input;
+	private List<String> input;
 	private int storage_cap;
 	private String reward_message;
 	private String other_require;
@@ -231,8 +231,8 @@ public class BuildingTemplate {
 	private int attack_rob_pos;
 	private int output_per_resource;
 	private int max_target;
-	private String input_string;
-	public String getInput_string() {
+	private List<String> input_string;
+	public List<String> getInput_string() {
 		return input_string;
 	}
 
