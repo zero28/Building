@@ -9,6 +9,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
+
+import com.gmail.zhou1992228.building.util.Util;
 
 public class BuildingTemplate {
 	public static HashMap<String, BuildingTemplate> building_templates =
@@ -41,6 +44,8 @@ public class BuildingTemplate {
 		reward_message = config.getString("reward_message", "");
 		other_require = config.getString("other_require", "");
 		rob_pos = config.getInt("rob_pos");
+		entity = config.getStringList("entity");
+		entity_message = config.getStringList("entity_message");
 		
 		attack_type = config.getString("attack_type");
 		attack_x_range = config.getInt("attack_x_range");
@@ -128,7 +133,43 @@ public class BuildingTemplate {
 	public String getName() {
 		return name;
 	}
+	
+	private boolean MatchEntity(Location loc) {
+		Location l1 = loc.clone().add(template_width / 2 + 1, template_height / 2 + 1, template_width / 2 + 1);
+		Location l2 = loc.clone().subtract(template_width / 2 + 1, template_height / 2 + 1, template_width / 2 + 1);
+		try {
+			for (String e : getEntity()) {
+				String entityName = e.split(":")[0];
+				int entityCount = Integer.parseInt(e.split(":")[1]);
+				if (!MatchEntity(l1, l2, Class.forName("org.bukkit.entity." + entityName), entityCount)) {
+					return false;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private boolean MatchEntity(Location l1, Location l2, Class entityClass, int count) {
+		try {
+			List<Entity> entities = (List<Entity>) l1.getWorld().getEntitiesByClass(entityClass);
+			for (Entity e : entities) {
+				if (Util.InsidePos(e.getLocation(), l1, l2)) {
+					--count;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return count <= 0;
+	}
+	
 	public Location Match(Location loc) {
+		if (!MatchEntity(loc)) return null;
 		int orix = (int) (loc.getX() - template_width / 2);
 		int oriy = (int) (loc.getY() - template_height / 2);
 		int oriz = (int) (loc.getZ() - template_width / 2);
@@ -232,6 +273,14 @@ public class BuildingTemplate {
 	private int output_per_resource;
 	private int max_target;
 	private List<String> input_string;
+	private List<String> entity;
+	private List<String> entity_message;
+	public List<String> getEntity() {
+		return entity;
+	}
+	public List<String> getEntity_message() {
+		return entity_message;
+	}
 	public List<String> getInput_string() {
 		return input_string;
 	}
