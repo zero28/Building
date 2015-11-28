@@ -138,8 +138,8 @@ public class ResourceBuilding extends BuildingEntity {
 				           health_,
 				           getTemplate().getRewardMessage(),
 				           getTemplate().getInterval() - time_counter_,
-				           getTemplate().getInput() == null ? "不需要原材料" : input_count_ + "",
-				           getTemplate().getInput() == null ? "不需要原材料" :
+				           getTemplate().getInput() == null || getTemplate().getInput().size() == 0 ? "不需要原材料" : input_count_ + "",
+				           getTemplate().getInput() == null || getTemplate().getInput().size() == 0 ? "不需要原材料" :
 				        	   Joiner.on(" 或 ").join(getTemplate().getInput_string()), 
 				           getTemplate().getStorage_cap(),
 				           getTemplate().getStorage_cap() - output_count_);

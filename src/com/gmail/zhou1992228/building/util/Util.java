@@ -3,6 +3,7 @@ package com.gmail.zhou1992228.building.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
@@ -45,10 +46,19 @@ public class Util {
 		return YamlConfiguration.loadConfiguration(file);
 	}
     
+    public static HashMap<String, String> last_message = new HashMap<String, String>();
+    public static void NotifyPlayer(Player p, String message) {
+    	NotifyIfOnline(p.getName(), message);
+    }
     public static void NotifyIfOnline(String player_name, String message) {
+    	if (last_message.get(player_name) == null ||
+    		last_message.get(player_name).equalsIgnoreCase(message)) {
+    		return;
+    	}
     	Player p = Bukkit.getPlayer(player_name);
     	if (p != null) {
     		p.sendMessage(message);
+    		last_message.put(player_name, message);
     	}
     }
     

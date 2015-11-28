@@ -255,7 +255,7 @@ public class MilitaryBuilding extends BuildingEntity {
 	           getName(),
 	           getTemplate().getX_size(),getTemplate().getY_size(),getTemplate().getZ_size(),
 	           health_,
-	           getTemplate().getInput_string().isEmpty() ? "不需要原材料" : getTemplate().getInput_string(),
+	           getTemplate().getInput() == null || getTemplate().getInput().size() == 0 ? "不需要原材料" : getTemplate().getInput_string(),
 	           input_count_,
 	           getTemplate().getAttack_x_range(),getTemplate().getAttack_y_range(),getTemplate().getAttack_z_range(),
 	           Joiner.on(", ").join(rewards_message)

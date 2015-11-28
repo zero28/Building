@@ -223,23 +223,26 @@ public abstract class BuildingEntity {
 	
 	public void putInput(Player p, int count) {
 		if (template_.getInput().isEmpty()) {
-			p.sendMessage("此建筑不需要添加材料");
+			Util.NotifyPlayer(p, "此建筑不需要添加材料");
 			return;
 		}
 		int ccc = 0;
-		while (count > 0) {
+		boolean goon = true;
+		while (count > 0 && goon) {
+			goon = false;
 			for (String input : template_.getInput()) {
 				if (Util.takeRequires(p, input)) {
 					--count;
 					input_count_ += template_.getOutputPerResource();
 					++ccc;
+					goon = true;
 				}
 			}
 		}
 		if (ccc != 0) {
-			p.sendMessage("材料添加成功");
+			Util.NotifyPlayer(p, "材料添加成功");
 		} else {
-			p.sendMessage("你没有足够的材料");
+			Util.NotifyPlayer(p, "你没有足够的材料");
 		}
 	}
 	
