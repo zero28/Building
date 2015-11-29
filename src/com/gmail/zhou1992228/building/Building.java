@@ -15,6 +15,7 @@ import com.gmail.zhou1992228.building.command.CommandPut;
 import com.gmail.zhou1992228.building.command.CommandTemplate;
 import com.gmail.zhou1992228.building.command.CommandTestBuild;
 import com.gmail.zhou1992228.building.command.CommandUnFriend;
+import com.gmail.zhou1992228.building.eventhandler.RedstoneEventHandler;
 import com.gmail.zhou1992228.building.friend.Friend;
 import com.gmail.zhou1992228.building.task.TaskAutoSave;
 import com.gmail.zhou1992228.building.task.TaskBuildingAttack;
@@ -61,6 +62,7 @@ public class Building extends JavaPlugin {
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskDamageBuildings(), 10 * 20, 10 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskBuildingAttack(), 1 * 20, 1 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskAutoSave(), 10 * 20, 60 * 60 * 20);
+		this.getServer().getPluginManager().registerEvents(new RedstoneEventHandler(), this);
 		BuildingManager.ins.Init(this);
 		Friend.ins.Init(this);
 	}

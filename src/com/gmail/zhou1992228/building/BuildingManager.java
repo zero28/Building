@@ -45,8 +45,12 @@ public class BuildingManager {
 	}
 	
 	public BuildingEntity getNearBuilding(Entity e) {
+		return getBuildingWithLocation(e.getLocation());
+	}
+	
+	public BuildingEntity getBuildingWithLocation(Location loc) {
 		for (BuildingEntity building : buildings_) {
-			if (building.inBuilding(e.getLocation())) {
+			if (building.inBuilding(loc)) {
 				return building;
 			}
 		}
