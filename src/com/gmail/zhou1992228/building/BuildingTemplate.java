@@ -45,6 +45,8 @@ public class BuildingTemplate {
 		other_require = config.getString("other_require", "");
 		rob_pos = config.getInt("rob_pos");
 		entity_message = config.getStringList("entity_message");
+		destory_reward = config.getString("destory_reward");
+		destory_reward_message = config.getString("destory_reward_message", "");
 		
 		attack_type = config.getString("attack_type");
 		attack_x_range = config.getInt("attack_x_range");
@@ -266,6 +268,15 @@ public class BuildingTemplate {
 	private List<String> input;
 	private int storage_cap;
 	private String reward_message;
+	private String destory_reward;
+	private String destory_reward_message;
+	public String getDestory_reward() {
+		return destory_reward;
+	}
+	public String getDestory_reward_message() {
+		return destory_reward_message;
+	}
+
 	private String other_require;
 	private String type;
 	private String attack_type;

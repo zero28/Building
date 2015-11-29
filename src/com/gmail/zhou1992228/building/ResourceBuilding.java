@@ -60,6 +60,10 @@ public class ResourceBuilding extends BuildingEntity {
 			if (random.nextInt(100) < getTemplate().getRobPos()) {
 				onRob(entity);
 			}
+			if (health_ <= 0) {
+				Util.giveItems(p, getTemplate().getDestory_reward());
+				p.sendMessage("你摧毁了 " + getName() + "，获得了" + getTemplate().getDestory_reward_message());
+			}
 		} else if (entity instanceof Monster) {
 			if (health_ < 100) {
 				Util.NotifyIfOnline(getOwner(), "你的 " + getName() + " 正在被怪物破坏！耐久度即将耗尽！");
@@ -94,6 +98,10 @@ public class ResourceBuilding extends BuildingEntity {
 		}
 		
 		health_ -= attacker.getAttack();
+		if (health_ <= 0) {
+			attacker.addResource(getTemplate().getDestory_reward(),
+								 getTemplate().getDestory_reward_message());
+		}
 	}
 
 	private void onRob(Entity e) {
