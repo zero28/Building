@@ -57,8 +57,8 @@ public class Building extends JavaPlugin {
 		this.getCommand("unfriend").setExecutor(new CommandUnFriend());
 		this.getCommand("template").setExecutor(new CommandTemplate());
 		this.getCommand("buildlist").setExecutor(new CommandBuildlist());
-		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskUpdateBuilding(), 5 * 20, 5 * 20);
-		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskValidateBuilding(), 10 * 20, 10 * 20);
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskUpdateBuilding(), 60 * 20, 60 * 20);
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskValidateBuilding(), 20 * 20, 20 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskDamageBuildings(), 10 * 20, 10 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskBuildingAttack(), 1 * 20, 1 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskAutoSave(), 10 * 20, 60 * 60 * 20);

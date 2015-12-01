@@ -56,7 +56,6 @@ public class BuildingTemplate {
 		max_target = config.getInt("max_target", 1);
 		attack = config.getInt("attack");
 		
-		allow_empty = config.getBoolean("allowempty", true);
 		entity = config.getStringList("entity");
 		List<String> template = config.getStringList("template");
 		List<String> typelist = config.getStringList("typelist");
@@ -216,7 +215,7 @@ public class BuildingTemplate {
 				Building.LOG("template_id: " + template_ids[type][i][j][k]
 					+ "\nBlock:" + world.getBlockAt(ox + i, oy + j, oz + k).toString());
 			}
-			if (!(template_ids[type][i][j][k].equals("0") && allow_empty) &&
+			if (!template_ids[type][i][j][k].equals("*") &&
 				!Match(world.getBlockAt(ox + i, oy + j, oz + k),
 						template_ids[type][i][j][k])) {
 				return false;
@@ -262,6 +261,13 @@ public class BuildingTemplate {
 	private int z_size;
 	private int max_health;
 	private int template_width;
+	public int getTemplate_width() {
+		return template_width;
+	}
+	public int getTemplate_height() {
+		return template_height;
+	}
+
 	private int template_height;
 	private int interval;
 	private String output;
@@ -281,7 +287,6 @@ public class BuildingTemplate {
 	private String type;
 	private String attack_type;
 	private int rob_pos;
-	private boolean allow_empty;
 	private int attack_rob_pos;
 	private int output_per_resource;
 	private int max_target;

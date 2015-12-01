@@ -17,10 +17,12 @@ public class RedstoneEventHandler implements Listener {
 			e.getBlock().getType() == Material.WOOD_BUTTON) {
 			BuildingEntity b = BuildingManager.ins.getBuildingWithLocation(e.getBlock().getLocation());
 			if (b != null) {
-				Player p = Bukkit.getPlayer(b.getOwner());
-				if (p != null) {
-					if (b.inBuilding(p.getLocation())) {
-						b.onCollect(p, 1000);
+				if (b.inTemplate(e.getBlock().getLocation())) {
+					Player p = Bukkit.getPlayer(b.getOwner());
+					if (p != null) {
+						if (b.inBuilding(p.getLocation())) {
+							b.onCollect(p, 1000);
+						}
 					}
 				}
 			}

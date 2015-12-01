@@ -126,31 +126,22 @@ public abstract class BuildingEntity {
 	}
 	
 	abstract public void onCollect(Player p, int count);
-
-	/*
-	public void addInput(Player p, int count) {
-		if (template_.getInput().isEmpty()) {
-			p.sendMessage("然而这并没有什么~用！");
-			return;
-		}
-		while (count > 0) {
-			--count;
-			if (!Util.haveRequires(p, template_.getInput())) {
-				p.sendMessage("你没有足够的物品！");
-				break;
-			} else {
-				Util.takeItems(p, template_.getInput());
-				++input_count_;
-			}
-		}
-		p.sendMessage("已放入材料");
-	}
-	*/
-
 	abstract public void onDamage(Entity entity);
 	abstract public void TryAttack();
 	abstract public void AddIfInRange(BuildingEntity entity);
 	abstract public void onDamage(MilitaryBuilding attacker);
+	
+	public boolean inTemplate(Location loc) {
+		Location l1 = pos_.clone().add(
+				getTemplate().getTemplate_width() / 2,
+				getTemplate().getTemplate_height() / 2,
+				getTemplate().getTemplate_width() / 2);
+		Location l2 = pos_.clone().subtract(
+				getTemplate().getTemplate_width() / 2,
+				getTemplate().getTemplate_height() / 2,
+				getTemplate().getTemplate_width() / 2);
+		return Util.InsidePos(loc, l1, l2);
+	}
 	
 	public boolean Collide(Location loc1, Location loc2) {
 		int Xa = Math.abs(loc1.getBlockX() - loc2.getBlockX());
