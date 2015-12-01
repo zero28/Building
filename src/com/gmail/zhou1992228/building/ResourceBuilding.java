@@ -133,6 +133,7 @@ public class ResourceBuilding extends BuildingEntity {
 	@Override
 	public String Info() {
 		return String.format("建筑名称 : %s\n"
+						   + "拥有者 : %s\n"
 				           + "占地面积(直径) : %d * %d * %d\n"
 				           + "生命值 : %d\n"
 				           + "产物 : %s\n"
@@ -142,6 +143,7 @@ public class ResourceBuilding extends BuildingEntity {
 				           + "容量 : %d\n"
 				           + "剩余容量 : %d\n",
 				           getName(),
+				           getOwner(),
 				           getTemplate().getX_size(),getTemplate().getY_size(),getTemplate().getZ_size(),
 				           health_,
 				           getTemplate().getRewardMessage(),

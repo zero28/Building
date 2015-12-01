@@ -20,10 +20,12 @@ public class CommandInfo implements CommandExecutor {
 				p.sendMessage("你的附近没有建筑");
 				return true;
 			}
+			/*
 			if (!building.getOwner().equals(p.getName())) {
 				p.sendMessage("这不是你的建筑");
 				return true;
 			}
+			*/
 			p.sendMessage(building.Info());
 		}
 		return true;
