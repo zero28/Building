@@ -48,10 +48,17 @@ public class Util {
     
     public static HashMap<String, String> last_message = new HashMap<String, String>();
     public static void NotifyPlayer(Player p, String message) {
-    	NotifyIfOnline(p.getName(), message);
+    	NotifyIfOnline(p.getName(), message, false);
+    }
+    public static void NotifyPlayer(Player p, String message, boolean ignore_dulplicate) {
+    	NotifyIfOnline(p.getName(), message, ignore_dulplicate);
     }
     public static void NotifyIfOnline(String player_name, String message) {
-    	if (last_message.get(player_name) == null ||
+    	NotifyIfOnline(player_name, message, false);
+    }
+    public static void NotifyIfOnline(String player_name, String message, boolean ignore_dulplicate) {
+    	if (!ignore_dulplicate &&
+    		last_message.get(player_name) != null &&
     		last_message.get(player_name).equalsIgnoreCase(message)) {
     		return;
     	}

@@ -38,13 +38,14 @@ public class BuildingTemplate {
 		z_size = config.getInt("z_size");
 		input = config.getStringList("input");
 		input_string = config.getStringList("input_message");
-		output_per_resource = config.getInt("output_per_resource");
+		output_per_resource = config.getInt("output_per_resource", 1);
 		output = config.getString("output", "");
 		storage_cap = config.getInt("storage");
 		reward_message = config.getString("reward_message", "");
 		other_require = config.getString("other_require", "");
 		rob_pos = config.getInt("rob_pos");
 		entity_message = config.getStringList("entity_message");
+		destory_cooldown = config.getInt("destory_cooldown");
 		destory_reward = config.getString("destory_reward");
 		destory_reward_message = config.getString("destory_reward_message", "");
 		
@@ -178,6 +179,7 @@ public class BuildingTemplate {
 		
 		for (int type = 0; type < 8; ++type) {
 			if (MatchType(type, orix, oriy, oriz, loc.getWorld(), false)) {
+				//Building.LOG("Match exactly with origin location");
 				return new Location(loc.getWorld(),
 									orix + template_width / 2,
 									oriy + template_height / 2,
@@ -185,9 +187,9 @@ public class BuildingTemplate {
 			}
 		}
 		
-		for (int dx = -3; dx < 3; ++dx)
-		for (int dy = -3; dy < 3; ++dy)
-		for (int dz = -3; dz < 3; ++dz) {
+		for (int dx = -(template_width) / 2; dx < template_width / 2; ++dx)
+		for (int dy = -(template_height) / 2; dy < template_height / 2; ++dy)
+		for (int dz = -(template_width) / 2; dz < template_width / 2; ++dz) {
 			int match_x = orix + dx;
 			int match_y = oriy + dy;
 			int match_z = oriz + dz;
@@ -237,6 +239,7 @@ public class BuildingTemplate {
 	
 	@SuppressWarnings("deprecation")
 	private void SetBlock(Block block, String type) {
+		if (type.equals("*")) return;
 		String x[] = type.split(":");
 		if (x.length == 1) {
 			block.setTypeId(Integer.parseInt(x[0]));
@@ -290,9 +293,13 @@ public class BuildingTemplate {
 	private int attack_rob_pos;
 	private int output_per_resource;
 	private int max_target;
+	private int destory_cooldown;
 	private List<String> input_string;
 	private List<String> entity;
 	private List<String> entity_message;
+	public int getDestory_cooldown() {
+		return destory_cooldown;
+	}
 	public List<String> getEntity() {
 		return entity;
 	}

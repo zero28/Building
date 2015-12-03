@@ -75,6 +75,7 @@ public abstract class BuildingEntity {
 		input_count_ = config.getInt("input_count");
 		output_count_ = config.getInt("output_count");
 		time_counter_ = config.getInt("time_counter");
+		tot_time_ = config.getInt("tot_time");
 		name_ = config.getString("custom_name");
 		health_ = config.getInt("health");
 		template_ = BuildingTemplate.building_templates.get(building_name);
@@ -90,6 +91,7 @@ public abstract class BuildingEntity {
 		config.set("input_count", input_count_);
 		config.set("output_count", output_count_);
 		config.set("time_counter", time_counter_);
+		config.set("tot_time", tot_time_);
 		config.set("health", health_);
 		config.set("custom_name", name_);
 	  } catch (Exception e) {}
@@ -112,6 +114,7 @@ public abstract class BuildingEntity {
 	}
 	public void onUpdate() {
 		time_counter_++;
+		tot_time_++;
 		if (template_ == null) {
 			return;
 		}
@@ -191,6 +194,8 @@ public abstract class BuildingEntity {
 		return health_ <= 0;
 	}
 	
+	private int validate_error = 0;
+	
 	public boolean Validate() {
 		try {
 			if (!getPos().getChunk().isLoaded()) {
@@ -200,15 +205,22 @@ public abstract class BuildingEntity {
 			e.printStackTrace();
 			return true;
 		}
-		Location new_loc = template_.Match(pos_);
-		if (new_loc == null) {
-			return false;
-		}
-		pos_ = new_loc;
 		if (health_ <= 0) {
 			valid = false;
 			return false;
 		}
+		Location new_loc = template_.Match(pos_);
+		if (new_loc == null) {
+			++validate_error;
+			if (validate_error >= 10) {
+				return false;
+			} else {
+				Util.NotifyIfOnline(getOwner(), "你的 " + this.getName() + " 不符合建筑规范，请尽快修复！", true);
+				return true;
+			}
+		}
+		pos_ = new_loc;
+		validate_error = 0;
 		return true;
 	}
 	
@@ -246,6 +258,7 @@ public abstract class BuildingEntity {
 	protected int output_count_;
 	protected int health_;
 	protected int time_counter_;
+	protected int tot_time_ = 0;
 	
 	private Location pos_;
 	private String building_name;

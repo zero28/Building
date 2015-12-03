@@ -69,7 +69,7 @@ public class MilitaryBuilding extends BuildingEntity {
 			if (random.nextInt(100) < getTemplate().getRobPos()) {
 				onRob(entity);
 			}
-			if (health_ <= 0) {
+			if (health_ <= 0 && tot_time_ > getTemplate().getDestory_cooldown()) {
 				Util.giveItems(p, getTemplate().getDestory_reward());
 				p.sendMessage("你摧毁了 " + getName() + "，获得了" + getTemplate().getDestory_reward_message());
 			}
@@ -126,7 +126,7 @@ public class MilitaryBuilding extends BuildingEntity {
 		} else {
 			Util.NotifyIfOnline(getOwner(), "你的 " + getName() + " 正在被攻击！");
 		}
-		if (health_ <= 0) {
+		if (health_ <= 0 && tot_time_ > getTemplate().getDestory_cooldown()) {
 			attacker.addResource(getTemplate().getDestory_reward(),
 								 getTemplate().getDestory_reward_message());
 		}
