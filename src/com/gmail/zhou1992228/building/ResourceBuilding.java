@@ -47,6 +47,7 @@ public class ResourceBuilding extends BuildingEntity {
 	@Override
 	public void onDamage(Entity entity) {
 		if (entity instanceof Player) {
+			/*
 			Player p = (Player) entity;
 			if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
 				return;
@@ -64,6 +65,7 @@ public class ResourceBuilding extends BuildingEntity {
 				Util.giveItems(p, getTemplate().getDestory_reward());
 				p.sendMessage("你摧毁了 " + getName() + "，获得了" + getTemplate().getDestory_reward_message());
 			}
+			*/
 		} else if (entity instanceof Monster) {
 			if (health_ < 100) {
 				Util.NotifyIfOnline(getOwner(), "你的 " + getName() + " 正在被怪物破坏！耐久度即将耗尽！");
@@ -102,6 +104,24 @@ public class ResourceBuilding extends BuildingEntity {
 			attacker.addResource(getTemplate().getDestory_reward(),
 								 getTemplate().getDestory_reward_message());
 		}
+	}
+	
+	private void onRobAll(Entity e) {
+		String robber = "怪物";
+		if (e instanceof Player) {
+			Player p = (Player) e;
+			robber = p.getName();
+			while (output_count_ > 0) {
+				Util.giveItems(p, getTemplate().getOutput());
+				p.sendMessage(String.format("你从 %s 的 %s 中 抢走了 %s",
+						getOwner(), getName(), getTemplate().getRewardMessage()));
+				--output_count_;
+			}
+		}
+		Util.NotifyIfOnline(
+				getOwner(), String.format("你的 %s 中的物品被 %s 抢光了",
+									  getName(),
+									  robber));
 	}
 
 	private void onRob(Entity e) {
@@ -153,5 +173,28 @@ public class ResourceBuilding extends BuildingEntity {
 				        	   Joiner.on(" 或 ").join(getTemplate().getInput_string()), 
 				           getTemplate().getStorage_cap(),
 				           getTemplate().getStorage_cap() - output_count_);
+	}
+
+	@Override
+	public void attackBy(Player p) {
+		if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
+			return;
+		}
+		if (health_ < 100) {
+			Util.NotifyIfOnline(getOwner(), "你的 " + getName() + " 正在被玩家 " + p.getName() + " 破坏！耐久度即将耗尽！");
+		} else {
+			Util.NotifyIfOnline(getOwner(), "你的 " + getName() + " 正在被玩家 " + p.getName() + " 破坏！");
+		}
+		health_ -= Util.getAttack(p);
+		if (random.nextInt(100) < getTemplate().getRobPos()) {
+			onRob(p);
+		}
+		if (health_ < 30) {
+			onRobAll(p);
+		}
+		if (health_ <= 0 && tot_time_ > getTemplate().getDestory_cooldown()) {
+			Util.giveItems(p, getTemplate().getDestory_reward());
+			p.sendMessage("你摧毁了 " + getName() + "，获得了" + getTemplate().getDestory_reward_message());
+		}
 	}
 }

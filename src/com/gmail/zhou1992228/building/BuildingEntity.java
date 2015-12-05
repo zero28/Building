@@ -128,6 +128,7 @@ public abstract class BuildingEntity {
 		}
 	}
 	
+	abstract public void attackBy(Player p);
 	abstract public void onCollect(Player p, int count);
 	abstract public void onDamage(Entity entity);
 	abstract public void TryAttack();

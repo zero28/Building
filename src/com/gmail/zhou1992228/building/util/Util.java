@@ -56,6 +56,19 @@ public class Util {
     public static void NotifyIfOnline(String player_name, String message) {
     	NotifyIfOnline(player_name, message, false);
     }
+    
+    public static int getAttack(Player p) {
+    	switch (p.getItemInHand().getType()) {
+    	case DIAMOND_SWORD: return 7;
+    	case GOLD_SWORD: return 6;
+    	case IRON_SWORD: return 5;
+    	case STONE_SWORD: return 4;
+    	case WOOD_SWORD: return 3;
+		default:
+			return 1;
+    	}
+    }
+    
     public static void NotifyIfOnline(String player_name, String message, boolean ignore_dulplicate) {
     	if (!ignore_dulplicate &&
     		last_message.get(player_name) != null &&
