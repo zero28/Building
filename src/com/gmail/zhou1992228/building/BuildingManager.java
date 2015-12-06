@@ -39,8 +39,17 @@ public class BuildingManager {
 	public void Load() {
 		FileConfiguration config = Util.getConfigWithName("buildings.yml");
 		for (String key : config.getKeys(false)) {
-			AddBuilding(BuildingEntity.createBuildingEntity(
+			BuildingEntity be = null;
+			try {
+				be = BuildingEntity.createBuildingEntity(
+					config.getConfigurationSection(key));
+			} catch (Exception e) {
+				Building.LOG("建筑 " + key + " 载入错误");
+			}
+			if (be != null) {
+				AddBuilding(BuildingEntity.createBuildingEntity(
 					config.getConfigurationSection(key)));
+			}
 		}
 	}
 	

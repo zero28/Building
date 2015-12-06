@@ -213,7 +213,7 @@ public abstract class BuildingEntity {
 		Location new_loc = template_.Match(pos_);
 		if (new_loc == null) {
 			++validate_error;
-			if (validate_error >= 10) {
+			if (validate_error >= 6) {
 				return false;
 			} else {
 				Util.NotifyIfOnline(getOwner(), "你的 " + this.getName() + " 不符合建筑规范，请尽快修复！", true);

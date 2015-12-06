@@ -210,16 +210,22 @@ public class BuildingTemplate {
 	}
 	
 	private boolean MatchType(int type, int ox, int oy, int oz, World world, boolean debug) {
-		for (int i = 0; i < template_width; ++i)
 		for (int j = 0; j < template_height; ++j)
+		for (int i = 0; i < template_width; ++i)
 		for (int k = 0; k < template_width; ++k) {
 			if (debug) {
 				Building.LOG("template_id: " + template_ids[type][i][j][k]
 					+ "\nBlock:" + world.getBlockAt(ox + i, oy + j, oz + k).toString());
+				if (!template_ids[type][i][j][k].equals("*")) {
+					Match(world.getBlockAt(ox + i, oy + j, oz + k),
+							template_ids[type][i][j][k],
+							true);
+				}
 			}
 			if (!template_ids[type][i][j][k].equals("*") &&
 				!Match(world.getBlockAt(ox + i, oy + j, oz + k),
-						template_ids[type][i][j][k])) {
+						template_ids[type][i][j][k],
+						false)) {
 				return false;
 			}
 		}
@@ -227,13 +233,22 @@ public class BuildingTemplate {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private boolean Match(Block block, String type) {
+	private boolean Match(Block block, String type, boolean debug) {
 		String s = "" + block.getTypeId();
+		int id = Integer.parseInt(type.split(":")[0]);
 		try {
-			if (block.getData() != 0 && !whitelist_id.contains(Integer.parseInt(type))) {
-				s += ":" + ((int)(block.getData()));
+			if (debug) Building.LOG("try add data");
+			if (block.getData() != 0 && !whitelist_id.contains(id)) {
+				if (debug) Building.LOG("data: " + block.getData());
+				s += ":" + block.getData();
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			if (debug) e.printStackTrace();
+		}
+		if (debug) Building.LOG("output_str: " + s + " match type: " + type);
+		if (whitelist_id.contains(id)) {
+			type = type.split(":")[0];
+		}
 		return s.equals(type);
 	}
 	
@@ -245,7 +260,7 @@ public class BuildingTemplate {
 			block.setTypeId(Integer.parseInt(x[0]));
 		} else {
 			block.setTypeId(Integer.parseInt(x[0]));
-			block.setData((byte) Integer.parseInt(x[0]));
+			block.setData((byte) Integer.parseInt(x[1]));
 		}
 	}
 	
