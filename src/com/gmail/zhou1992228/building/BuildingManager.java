@@ -77,6 +77,17 @@ public class BuildingManager {
 				"backup",
 				"buildings-" + Calendar.getInstance().getTimeInMillis() + ".yml.backup");
 	}
+	
+	public List<BuildingEntity> getBuildingOwnBy(String playerName) {
+		List<BuildingEntity> ret = new ArrayList<BuildingEntity>();
+		for (BuildingEntity be : buildings_) {
+			if (be.getOwner().equalsIgnoreCase(playerName)) {
+				ret.add(be);
+			}
+		}
+		return ret;
+	}
+	
 	public void Save() {
 		FileConfiguration config = Util.getConfigWithName("empty.yml");
 		for (int i = 0; i < buildings_.size(); ++i) {
@@ -102,11 +113,11 @@ public class BuildingManager {
 						AddBuilding(BuildingEntity.createBuildingEntity(
 								p.getName(), loc, building_name, custom_name));
 					} else {
-						p.sendMessage("你没有足够的物品/金钱来建设这个建筑");
+						p.sendMessage("你没有足够的物品/前置建筑/金钱来建设这个建筑");
 					}
 				}
 			} else {
-				p.sendMessage("再看看设计图吧？");
+				p.sendMessage("再看看设计图吧(周围要留足够的空白哦)？");
 			}
 		} else {
 			p.sendMessage("没有这个建筑");

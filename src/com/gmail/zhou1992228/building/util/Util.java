@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
@@ -18,6 +19,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import com.gmail.zhou1992228.building.Building;
+import com.gmail.zhou1992228.building.BuildingEntity;
+import com.gmail.zhou1992228.building.BuildingManager;
 
 public class Util {
 	
@@ -121,6 +124,8 @@ public class Util {
 			if (par.length < 2) {
 				p.sendMessage("配置文件错误，请联系管理员");
 			}
+		} else if (par[0].equalsIgnoreCase("b")) {
+			// Do nothing
 		} else if (par[0].equalsIgnoreCase("m")) {
 			ItemStack it = createFromString(item);
 			p.getInventory().addItem(it);
@@ -227,6 +232,20 @@ public class Util {
 				return false;
 			}
 			return true;
+		} else if (par[0].equalsIgnoreCase("b")) {
+			int count = 0;
+			if (par.length > 2) {
+				count = Integer.parseInt(par[2]);
+			} else {
+				count = 1;
+			}
+			List<BuildingEntity> bs = BuildingManager.ins.getBuildingOwnBy(p.getName());
+			for (BuildingEntity be : bs) {
+				if (be.getBuildingName().equalsIgnoreCase(par[1])) {
+					--count;
+				}
+			}
+			return count <= 0;
 		} else if (par[0].equalsIgnoreCase("t")) {
 			int count = Integer.parseInt(par[par.length - 1]);
 			for (ItemStack it : p.getInventory()) {
@@ -288,6 +307,8 @@ public class Util {
 		} else if (par[0].equalsIgnoreCase("m")) {
 			ItemStack it = createFromString(item);
 			p.getInventory().removeItem(it);
+		} else if (par[0].equalsIgnoreCase("b")) {
+			// Do nothing
 		} else if (par[0].equalsIgnoreCase("t")) {
 			int count = Integer.parseInt(par[par.length - 1]);
 			for (ItemStack it : p.getInventory()) {

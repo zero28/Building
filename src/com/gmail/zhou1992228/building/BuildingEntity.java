@@ -78,6 +78,7 @@ public abstract class BuildingEntity {
 		tot_time_ = config.getInt("tot_time");
 		name_ = config.getString("custom_name");
 		health_ = config.getInt("health");
+		defence_timer_ = config.getInt("defence_timer");
 		template_ = BuildingTemplate.building_templates.get(building_name);
 	}
 	public void Save(ConfigurationSection config) {
@@ -94,6 +95,7 @@ public abstract class BuildingEntity {
 		config.set("tot_time", tot_time_);
 		config.set("health", health_);
 		config.set("custom_name", name_);
+		config.set("defence_timer", defence_timer_);
 	  } catch (Exception e) {}
 	}
 	
@@ -113,11 +115,19 @@ public abstract class BuildingEntity {
 		return template_;
 	}
 	public void onUpdate() {
-		time_counter_++;
 		tot_time_++;
 		if (template_ == null) {
 			return;
 		}
+		if (health_ <= 0) {
+			tot_time_ = -getTemplate().getRecovery_cooldown();
+			health_ = getTemplate().getMaxHealth();
+		}
+		if (tot_time_ < 0) {
+			return;
+		}
+		time_counter_++;
+		defence_timer_++;
 		if (time_counter_ >= template_.getInterval()) {
 			if (template_.getInput().isEmpty() || input_count_ > 0) {
 				if (template_.getStorage_cap() > output_count_) {
@@ -128,12 +138,21 @@ public abstract class BuildingEntity {
 		}
 	}
 	
+	private void TryCollectDefenceReward(Player p) {
+		if (!this.getTemplate().getDefence_reward().isEmpty() &&
+			this.getTemplate().getDefence_cooldown() > defence_timer_) {
+			defence_timer_ -= this.getTemplate().getDefence_cooldown();
+			Util.giveItems(p, this.getTemplate().getDefence_reward());
+			p.sendMessage("你额外获得了 " + this.getTemplate().getDefence_reward_message());
+		}
+	}
+	
 	abstract public void attackBy(Player p);
 	abstract public void onCollect(Player p, int count);
-	abstract public void onDamage(Entity entity);
+	abstract public boolean onDamage(Entity entity);
 	abstract public void TryAttack();
 	abstract public void AddIfInRange(BuildingEntity entity);
-	abstract public void onDamage(MilitaryBuilding attacker);
+	abstract public boolean onDamage(MilitaryBuilding attacker);
 	
 	public boolean inTemplate(Location loc) {
 		Location l1 = pos_.clone().add(
@@ -206,10 +225,6 @@ public abstract class BuildingEntity {
 			e.printStackTrace();
 			return true;
 		}
-		if (health_ <= 0) {
-			valid = false;
-			return false;
-		}
 		Location new_loc = template_.Match(pos_);
 		if (new_loc == null) {
 			++validate_error;
@@ -259,6 +274,7 @@ public abstract class BuildingEntity {
 	protected int output_count_;
 	protected int health_;
 	protected int time_counter_;
+	protected int defence_timer_ = 0;
 	protected int tot_time_ = 0;
 	
 	private Location pos_;

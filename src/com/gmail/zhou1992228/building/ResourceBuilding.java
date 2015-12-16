@@ -43,10 +43,13 @@ public class ResourceBuilding extends BuildingEntity {
 			Util.giveItems(p, getTemplate().getOutput());
 		}
 		p.sendMessage("你从 " + getName() + " 处 获得 " + getTemplate().getRewardMessage() + " * " + collect_count);
+		p.updateInventory();
 	}
 	@Override
-	public void onDamage(Entity entity) {
+	public boolean onDamage(Entity entity) {
+		if (health_ <= 0 || tot_time_ < 0) { return false; }
 		if (entity instanceof Player) {
+			return false;
 			/*
 			Player p = (Player) entity;
 			if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
@@ -77,9 +80,11 @@ public class ResourceBuilding extends BuildingEntity {
 				onRob(entity);
 			}
 		}
+		return true;
 	}
 	@Override
-	public void onDamage(MilitaryBuilding attacker) {
+	public boolean onDamage(MilitaryBuilding attacker) {
+		if (health_ <= 0 || tot_time_ < 0) { return false; }
 		if (random.nextInt(100) < attacker.getTemplate().getAttackRobPos()) {
 			if (output_count_ > 0) {
 				--output_count_;
@@ -104,6 +109,7 @@ public class ResourceBuilding extends BuildingEntity {
 			attacker.addResource(getTemplate().getDestory_reward(),
 								 getTemplate().getDestory_reward_message());
 		}
+		return true;
 	}
 	
 	private void onRobAll(Entity e) {
@@ -161,7 +167,8 @@ public class ResourceBuilding extends BuildingEntity {
 				           + "原材料数量 : %s\n"
 				           + "所需原材料 : %s\n"
 				           + "容量 : %d\n"
-				           + "剩余容量 : %d\n",
+				           + "剩余容量 : %d\n"
+				           + "恢复剩余时间 : %d\n",
 				           getName(),
 				           getOwner(),
 				           getTemplate().getX_size(),getTemplate().getY_size(),getTemplate().getZ_size(),
@@ -172,11 +179,13 @@ public class ResourceBuilding extends BuildingEntity {
 				           getTemplate().getInput() == null || getTemplate().getInput().size() == 0 ? "不需要原材料" :
 				        	   Joiner.on(" 或 ").join(getTemplate().getInput_string()), 
 				           getTemplate().getStorage_cap(),
-				           getTemplate().getStorage_cap() - output_count_);
+				           getTemplate().getStorage_cap() - output_count_,
+				           Math.max(-tot_time_, 0));
 	}
 
 	@Override
 	public void attackBy(Player p) {
+		if (health_ <= 0 || tot_time_ < 0) { return; }
 		if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
 			return;
 		}

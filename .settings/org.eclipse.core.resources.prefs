@@ -6,6 +6,7 @@ encoding//src/com/gmail/zhou1992228/building/BuildingManager.java=UTF-8
 encoding//src/com/gmail/zhou1992228/building/BuildingTemplate.java=UTF-8
 encoding//src/com/gmail/zhou1992228/building/MilitaryBuilding.java=UTF-8
 encoding//src/com/gmail/zhou1992228/building/ResourceBuilding.java=UTF-8
+encoding//src/com/gmail/zhou1992228/building/command/CommandBuildingInfo.java=UTF-8
 encoding//src/com/gmail/zhou1992228/building/command/CommandCollect.java=UTF-8
 encoding//src/com/gmail/zhou1992228/building/command/CommandInfo.java=UTF-8
 encoding//src/com/gmail/zhou1992228/building/command/CommandPut.java=UTF-8

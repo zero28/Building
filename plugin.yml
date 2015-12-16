@@ -31,3 +31,6 @@ commands:
   buildlist:
     description: test
     usage: /<command>
+  bi:
+    description: test
+    usage: /<command>

@@ -7,6 +7,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.zhou1992228.building.command.CommandAddBuilding;
+import com.gmail.zhou1992228.building.command.CommandBuildingInfo;
 import com.gmail.zhou1992228.building.command.CommandBuildlist;
 import com.gmail.zhou1992228.building.command.CommandCollect;
 import com.gmail.zhou1992228.building.command.CommandFriend;
@@ -58,6 +59,7 @@ public class Building extends JavaPlugin {
 		this.getCommand("unfriend").setExecutor(new CommandUnFriend());
 		this.getCommand("template").setExecutor(new CommandTemplate());
 		this.getCommand("buildlist").setExecutor(new CommandBuildlist());
+		this.getCommand("bi").setExecutor(new CommandBuildingInfo());
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskUpdateBuilding(), 60 * 20, 60 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskValidateBuilding(), 20 * 20, 20 * 20);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskDamageBuildings(), 10 * 20, 10 * 20);

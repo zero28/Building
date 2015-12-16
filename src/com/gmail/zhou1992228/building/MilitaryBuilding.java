@@ -48,14 +48,17 @@ public class MilitaryBuilding extends BuildingEntity {
 			return;
 		}
 		Util.giveItems(p, rewards.get(0));
+		p.updateInventory();
 		p.sendMessage("你获得了战利品 " + rewards_message.get(0));
 		rewards.remove(0);
 		rewards_message.remove(0);
 	}
 	
 	@Override
-	public void onDamage(Entity entity) {
+	public boolean onDamage(Entity entity) {
+		if (health_ <= 0 || tot_time_ < 0) { return false; }
 		if (entity instanceof Player) {
+			return false;
 			/*
 			Player p = (Player) entity;
 			if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
@@ -86,6 +89,7 @@ public class MilitaryBuilding extends BuildingEntity {
 				onRob(entity);
 			}
 		}
+		return true;
 	}
 
 	private void onRobAll(Entity e) {
@@ -125,7 +129,8 @@ public class MilitaryBuilding extends BuildingEntity {
 	}
 
 	@Override
-	public void onDamage(MilitaryBuilding attacker) {
+	public boolean onDamage(MilitaryBuilding attacker) {
+		if (health_ <= 0 || tot_time_ < 0) { return false; }
 		health_ -= attacker.getAttack();
 		if (random.nextInt(100) < attacker.getTemplate().getAttackRobPos()) {
 			if (input_count_ > getTemplate().getOutputPerResource()) {
@@ -150,6 +155,7 @@ public class MilitaryBuilding extends BuildingEntity {
 			attacker.addResource(getTemplate().getDestory_reward(),
 								 getTemplate().getDestory_reward_message());
 		}
+		return true;
 	}
 	
 	public int getAttack() {
@@ -224,9 +230,10 @@ public class MilitaryBuilding extends BuildingEntity {
 					it.remove();
 				} else if (!getOwner().equals(building.getOwner())
 						&& !Friend.ins.isFriend(getOwner(), building.getOwner())) {
-					building.onDamage(this);
-					--left_attack;
-					--input_count_;
+					if (building.onDamage(this)) {
+						--left_attack;
+						--input_count_;
+					}
 				}
 			}
 		} else {
@@ -279,6 +286,7 @@ public class MilitaryBuilding extends BuildingEntity {
 	           + "原材料 : %s\n"
 	           + "剩余攻击次数 : %d\n"
 	           + "攻击范围(半径) : %d * %d * %d\n"
+	           + "恢复剩余时间 : %d"
 	           + "战利品 : %s\n",
 	           getName(),
 	           getOwner(),
@@ -287,12 +295,14 @@ public class MilitaryBuilding extends BuildingEntity {
 	           getTemplate().getInput() == null || getTemplate().getInput().size() == 0 ? "不需要原材料" : getTemplate().getInput_string(),
 	           input_count_,
 	           getTemplate().getAttack_x_range(),getTemplate().getAttack_y_range(),getTemplate().getAttack_z_range(),
+	           Math.max(-tot_time_, 0),
 	           Joiner.on(", ").join(rewards_message)
 	           );
 	}
 
 	@Override
 	public void attackBy(Player p) {
+		if (health_ <= 0 || tot_time_ < 0) { return; }
 		if (p.getName().equals(getOwner()) || Friend.ins.isFriend(p.getName(), getOwner())) {
 			return;
 		}
