@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 
+import com.gmail.zhou1992228.building.task.TaskHighlightBlock;
 import com.gmail.zhou1992228.building.util.Util;
 import com.google.common.base.Joiner;
 
@@ -228,65 +229,89 @@ public class BuildingTemplate {
 		if (!MatchEntity(loc))
 			return null;
 		int orix = (int) (loc.getX() - template_width / 2);
-		int oriy = (int) (loc.getY() - template_height / 2);
+		int oriy = (int) (loc.getY() - 2);
 		int oriz = (int) (loc.getZ() - template_width / 2);
 
 		for (int type = 0; type < 8; ++type) {
-			if (MatchType(type, orix, oriy, oriz, loc.getWorld(), false)) {
-				// Building.LOG("Match exactly with origin location");
+			if (MatchType(type, orix, oriy, oriz, loc.getWorld(), false, false) == -1) {
 				return new Location(loc.getWorld(), orix + template_width / 2,
-						oriy + template_height / 2, oriz + template_width / 2);
+					oriy + 2, oriz + template_width / 2);
 			}
 		}
-
-		for (int dx = -(template_width) / 2; dx < template_width / 2; ++dx)
-			for (int dy = -(Math.max(5, template_height)); dy < Math.max(5,
-					template_height); ++dy)
-				for (int dz = -(template_width) / 2; dz < template_width / 2; ++dz) {
+		int mr = 0;
+		int showx = 0, showy = 0, showz = 0, showtype = 0;
+		for (int dx = -3 ; dx < 4; ++dx)
+			for (int dy = -3; dy < 4; ++dy)
+				for (int dz = -3; dz < 4; ++dz) {
 					int match_x = orix + dx;
 					int match_y = oriy + dy;
 					int match_z = oriz + dz;
 					for (int type = 0; type < 8; ++type) {
-						if (MatchType(type, match_x, match_y, match_z,
-								loc.getWorld(), false)) {
-							return new Location(loc.getWorld(), match_x
-									+ template_width / 2, match_y
-									+ template_height / 2, match_z
-									+ template_width / 2);
+						int result = MatchType(type, match_x, match_y, match_z,
+								loc.getWorld(), false, false);
+						if (result == -1) {
+							return new Location(loc.getWorld(),
+									match_x	+ template_width / 2,
+									match_y	+ 2,
+									match_z	+ template_width / 2);
+						} else {
+							if (result >= mr) {
+								mr = result;
+								showx = match_x;
+								showy = match_y;
+								showz = match_z;
+								showtype = type;
+							}
 						}
 					}
 				}
+		MatchType(showtype, showx, showy, showz, loc.getWorld(), false, true);
 		return null;
 	}
 
 	public boolean TestMatchType(int type, Location l) {
 		return MatchType(type, l.getBlockX(), l.getBlockY(), l.getBlockZ(),
-				l.getWorld(), true);
+				l.getWorld(), true, true) == -1;
 	}
 
-	private boolean MatchType(int type, int ox, int oy, int oz, World world,
-			boolean debug) {
-		for (int j = 0; j < template_height; ++j)
+	private int MatchType(int type, int ox, int oy, int oz, World world,
+			boolean debug, boolean show_effect) {
+		int match_count = 0;
+		int show_count = show_effect ? 8 : 0;
+		for (int j = 0; j < template_height; ++j) {
+			boolean should_return = false;
 			for (int i = 0; i < template_width; ++i)
-				for (int k = 0; k < template_width; ++k) {
-					if (debug) {
-						Building.LOG("template_id: "
-								+ template_ids[type][i][j][k]
-								+ "\nBlock:"
-								+ world.getBlockAt(ox + i, oy + j, oz + k)
-										.toString());
-						if (!template_ids[type][i][j][k].equals("*")) {
-							Match(world.getBlockAt(ox + i, oy + j, oz + k),
-									template_ids[type][i][j][k], true);
-						}
-					}
-					if (!template_ids[type][i][j][k].equals("*")
-							&& !Match(world.getBlockAt(ox + i, oy + j, oz + k),
-									template_ids[type][i][j][k], false)) {
-						return false;
+			for (int k = 0; k < template_width; ++k) {
+				if (debug) {
+					Building.LOG("template_id: "
+							+ template_ids[type][i][j][k]
+							+ "\nBlock:"
+							+ world.getBlockAt(ox + i, oy + j, oz + k)
+									.toString());
+					if (!template_ids[type][i][j][k].equals("*")) {
+						Match(world.getBlockAt(ox + i, oy + j, oz + k),
+								template_ids[type][i][j][k], true);
 					}
 				}
-		return true;
+				if (!template_ids[type][i][j][k].equals("*")
+						&& !Match(world.getBlockAt(ox + i, oy + j, oz + k),
+								template_ids[type][i][j][k], false)) {
+					if (show_count > 0) {
+						TaskHighlightBlock.New(
+							new Location(world, ox + i + 0.5, oy + j + 0.5, oz + k + 0.5),
+							5);
+						--show_count;
+					}
+					should_return = true;
+				} else {
+					++match_count;
+				}
+			}
+			if (should_return) {
+				return match_count;
+			}
+		}
+		return -1;
 	}
 
 	private boolean Match(Block block, String type, boolean debug) {
@@ -325,8 +350,8 @@ public class BuildingTemplate {
 
 	@SuppressWarnings("deprecation")
 	private void SetBlock(Block block, String type) {
-		if (type.equals("*"))
-			return;
+		type = type.split("---")[0];
+		if (type.equals("*")) return;
 		String x[] = type.split(":");
 		if (x.length == 1) {
 			block.setTypeId(Integer.parseInt(x[0]));

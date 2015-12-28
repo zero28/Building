@@ -106,18 +106,18 @@ public class BuildingManager {
 			Location loc = template.Match(p.getLocation());
 			if (loc != null) {
 				if (CollideWithOtherBuilding(loc, template)) {
-					p.sendMessage("建筑与已存在的建筑冲突！");
+					p.sendMessage("建筑与已存在的建筑冲突！离远点重建吧");
 				} else {
 					if (Util.takeRequires(p, template.getOtherRequire())) {
 						p.sendMessage(building_name + " 建设成功！");
 						AddBuilding(BuildingEntity.createBuildingEntity(
 								p.getName(), loc, building_name, custom_name));
 					} else {
-						p.sendMessage("你没有足够的物品/前置建筑/金钱来建设这个建筑");
+						p.sendMessage("你没有足够的物品/前置建筑/金钱来建设这个建筑,输入 /bi 建筑名称  查看建筑的需求吧.");
 					}
 				}
 			} else {
-				p.sendMessage("再看看设计图吧(周围要留足够的空白哦)？");
+				p.sendMessage("再看看设计图吧？留意周围被火焰包围的方块吧");
 			}
 		} else {
 			p.sendMessage("没有这个建筑");

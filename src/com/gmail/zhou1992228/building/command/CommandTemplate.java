@@ -162,7 +162,7 @@ public class CommandTemplate implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	private String BlockToString(Block b) {
 		String ret = b.getTypeId() + "";
-		if (b.getData() != 0) {
+		if (b.getData() != 0 && !BuildingTemplate.whitelist_id.contains(b.getTypeId())) {
 			ret += ":" + ((int)(b.getData()));
 		}
 		return ret;
