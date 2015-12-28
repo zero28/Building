@@ -178,14 +178,14 @@ public class MilitaryBuilding extends BuildingEntity {
 	
 	@Override
 	public void AddIfInRange(BuildingEntity entity) {
-		Location loc = entity.getPos();
+		Location loc = entity.getMidPos();
 		Location l1 = 
-				getPos().clone().add(getTemplate().getAttack_x_range(),
+				getMidPos().clone().add(getTemplate().getAttack_x_range(),
 						 getTemplate().getAttack_y_range(),
 						 getTemplate().getAttack_z_range());
 
 		Location l2 = 
-				getPos().clone().add(-getTemplate().getAttack_x_range(),
+				getMidPos().clone().add(-getTemplate().getAttack_x_range(),
 						 -getTemplate().getAttack_y_range(),
 						 -getTemplate().getAttack_z_range());
 		if (Util.InsidePos(loc, l1, l2)) {
@@ -205,7 +205,7 @@ public class MilitaryBuilding extends BuildingEntity {
 			int left_attack = getTemplate().getMax_target();
 			List<Entity> entities;
 			try {
-				entities = getPos().getWorld().getEntities();
+				entities = getMidPos().getWorld().getEntities();
 			} catch (Exception e) {
 				return;
 			}
@@ -244,12 +244,12 @@ public class MilitaryBuilding extends BuildingEntity {
 	@SuppressWarnings("deprecation")
 	private boolean Attack(Entity e) {
 		Location l1 = 
-				getPos().clone().add(getTemplate().getAttack_x_range(),
+				getMidPos().clone().add(getTemplate().getAttack_x_range(),
 						 getTemplate().getAttack_y_range(),
 						 getTemplate().getAttack_z_range());
 
 		Location l2 = 
-				getPos().clone().add(-getTemplate().getAttack_x_range(),
+				getMidPos().clone().add(-getTemplate().getAttack_x_range(),
 						 -getTemplate().getAttack_y_range(),
 						 -getTemplate().getAttack_z_range());
 		if (e instanceof Player) {

@@ -15,6 +15,7 @@ import com.gmail.zhou1992228.building.command.CommandInfo;
 import com.gmail.zhou1992228.building.command.CommandPut;
 import com.gmail.zhou1992228.building.command.CommandTemplate;
 import com.gmail.zhou1992228.building.command.CommandTestBuild;
+import com.gmail.zhou1992228.building.command.CommandTestGive;
 import com.gmail.zhou1992228.building.command.CommandUnFriend;
 import com.gmail.zhou1992228.building.eventhandler.PlayerAttackBuildingEventHandler;
 import com.gmail.zhou1992228.building.eventhandler.RedstoneEventHandler;
@@ -54,6 +55,7 @@ public class Building extends JavaPlugin {
 		this.getCommand("collect").setExecutor(new CommandCollect());
 		this.getCommand("put").setExecutor(new CommandPut());
 		this.getCommand("testbuild").setExecutor(new CommandTestBuild());
+		this.getCommand("testgive").setExecutor(new CommandTestGive());
 		this.getCommand("xx").setExecutor(new CommandInfo());
 		this.getCommand("friend").setExecutor(new CommandFriend());
 		this.getCommand("unfriend").setExecutor(new CommandUnFriend());

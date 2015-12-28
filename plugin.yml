@@ -29,8 +29,11 @@ commands:
     description: test
     usage: /<command>
   buildlist:
-    description: test
+    description: show building list
     usage: /<command>
   bi:
+    description: show info of a building
+    usage: /<command>
+  testgive:
     description: test
     usage: /<command>

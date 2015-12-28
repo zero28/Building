@@ -102,6 +102,9 @@ public abstract class BuildingEntity {
 	public Location getPos() {
 		return pos_;
 	}
+	public Location getMidPos() {
+		return pos_.clone().add(0, getTemplate().getTemplate_height() - 2, 0);
+	}
 	public String getBuildingName() {
 		return building_name;
 	}
@@ -155,11 +158,11 @@ public abstract class BuildingEntity {
 	abstract public boolean onDamage(MilitaryBuilding attacker);
 	
 	public boolean inTemplate(Location loc) {
-		Location l1 = pos_.clone().add(
+		Location l1 = getMidPos().clone().add(
 				getTemplate().getTemplate_width() / 2,
 				getTemplate().getTemplate_height() / 2,
 				getTemplate().getTemplate_width() / 2);
-		Location l2 = pos_.clone().subtract(
+		Location l2 = getMidPos().clone().subtract(
 				getTemplate().getTemplate_width() / 2,
 				getTemplate().getTemplate_height() / 2,
 				getTemplate().getTemplate_width() / 2);
@@ -176,9 +179,9 @@ public abstract class BuildingEntity {
 		int Xma = (loc1.getBlockX() + loc2.getBlockX()) / 2;
 		int Yma = (loc1.getBlockY() + loc2.getBlockY()) / 2;
 		int Zma = (loc1.getBlockZ() + loc2.getBlockZ()) / 2;
-		int Xmb = pos_.getBlockX();
-		int Ymb = pos_.getBlockY();
-		int Zmb = pos_.getBlockZ();
+		int Xmb = getMidPos().getBlockX();
+		int Ymb = getMidPos().getBlockY();
+		int Zmb = getMidPos().getBlockZ();
 		return Math.abs(Xma - Xmb) <= (Xa + Xb) / 2 &&
 			   Math.abs(Yma - Ymb) <= (Ya + Yb) / 2 &&
 			   Math.abs(Zma - Zmb) <= (Za + Zb) / 2;
@@ -193,17 +196,17 @@ public abstract class BuildingEntity {
 			e.printStackTrace();
 			return false;
 		}
-		int max_x = pos_.getBlockX()
+		int max_x = getMidPos().getBlockX()
 				  + template_.getX_size() / 2;
-		int min_x = pos_.getBlockX()
+		int min_x = getMidPos().getBlockX()
 				  - template_.getX_size() / 2;
-		int max_y = pos_.getBlockY()
+		int max_y = getMidPos().getBlockY()
 				  + template_.getY_size() / 2;
-		int min_y = pos_.getBlockY()
+		int min_y = getMidPos().getBlockY()
 				  - template_.getY_size() / 2;
-		int max_z = pos_.getBlockZ()
+		int max_z = getMidPos().getBlockZ()
 				  + template_.getZ_size() / 2;
-		int min_z = pos_.getBlockZ()
+		int min_z = getMidPos().getBlockZ()
 				  - template_.getZ_size() / 2;
 		return (min_x <= loc.getBlockX() && loc.getBlockX() <= max_x) &&
 			   (min_y <= loc.getBlockY() && loc.getBlockY() <= max_y) &&
@@ -218,7 +221,7 @@ public abstract class BuildingEntity {
 	
 	public boolean Validate() {
 		try {
-			if (!getPos().getChunk().isLoaded()) {
+			if (!getMidPos().getChunk().isLoaded()) {
 				return true;
 			}
 		} catch (Exception e) {

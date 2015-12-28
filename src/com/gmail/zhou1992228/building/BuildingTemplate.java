@@ -225,6 +225,10 @@ public class BuildingTemplate {
 		return count <= 0;
 	}
 
+	public boolean WeakMatch(Location loc, int dy) {
+		return true;
+	}
+	
 	public Location Match(Location loc) {
 		if (!MatchEntity(loc))
 			return null;
