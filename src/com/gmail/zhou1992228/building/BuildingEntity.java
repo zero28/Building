@@ -103,7 +103,7 @@ public abstract class BuildingEntity {
 		return pos_;
 	}
 	public Location getMidPos() {
-		return pos_.clone().add(0, getTemplate().getTemplate_height() - 2, 0);
+		return pos_.clone().add(0, getTemplate().getTemplate_height() / 2 - 2, 0);
 	}
 	public String getBuildingName() {
 		return building_name;
@@ -159,13 +159,13 @@ public abstract class BuildingEntity {
 	
 	public boolean inTemplate(Location loc) {
 		Location l1 = getMidPos().clone().add(
-				getTemplate().getTemplate_width() / 2,
-				getTemplate().getTemplate_height() / 2,
-				getTemplate().getTemplate_width() / 2);
+				getTemplate().getTemplate_width() / 2 + 2,
+				getTemplate().getTemplate_height() / 2 + 2,
+				getTemplate().getTemplate_width() / 2 + 2);
 		Location l2 = getMidPos().clone().subtract(
-				getTemplate().getTemplate_width() / 2,
-				getTemplate().getTemplate_height() / 2,
-				getTemplate().getTemplate_width() / 2);
+				getTemplate().getTemplate_width() / 2 + 2,
+				getTemplate().getTemplate_height() / 2 + 2,
+				getTemplate().getTemplate_width() / 2 + 2);
 		return Util.InsidePos(loc, l1, l2);
 	}
 	

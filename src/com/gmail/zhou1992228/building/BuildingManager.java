@@ -78,6 +78,10 @@ public class BuildingManager {
 				"buildings-" + Calendar.getInstance().getTimeInMillis() + ".yml.backup");
 	}
 	
+	public List<BuildingEntity> getBuildingList() {
+		return buildings_;
+	}
+	
 	public List<BuildingEntity> getBuildingOwnBy(String playerName) {
 		List<BuildingEntity> ret = new ArrayList<BuildingEntity>();
 		for (BuildingEntity be : buildings_) {
